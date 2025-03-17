@@ -1,0 +1,304 @@
+/*using palettes: #1E2022, #52616B, #C9D6DF, #F0F5F9, orange - #e95420*/
+QWidget {
+    background-color: "#343938";
+}
+/********************************* Main UI settings ***************************************/
+#main {
+    background-color: "#323335";
+}
+/********************************* Main UI settings ***************************************/
+
+/********************************* Buttons UI QPushButton settings ***************************************/
+#dlgBtn, QMessageBox QPushButton {
+    font-size: 16px;
+    color: "#F0F5F9";
+    background-color: "#52616B";
+    border-radius: 7px;
+    min-height: 40px;
+    min-width: 207px;
+}
+
+#dlgBtn:pressed, QMessageBox QPushButton:pressed {
+    font-size: 16px;
+    color: "#F0F5F9";
+    background-color: "#52616B"
+}
+
+#dlgBtn:hover, QMessageBox QPushButton:hover {
+    border: 2px solid "#e95420";
+}
+
+#dlgBtn:disabled {
+    font-size: 16px;
+    color: "#888";
+    background-color: "#32414B"
+}
+
+QToolTip {
+    color: #1E2022;
+    background-color: #F0F5F9;
+    font-size: 16px;
+}
+/********************************* Buttons UI settings ***************************************/
+
+QLabel {
+    color: #F0F5F9;
+    font-size: 16px;
+}
+
+QLabel:disabled {
+    color: #52616B;
+}
+
+QLabel#orange {
+    color: #e95420;
+    text-align: center;
+    qproperty-alignment: AlignCenter;
+}
+
+/********************************* TextEdit UI settings ***************************************/
+QTextEdit, QLineEdit {
+    background-color: "#F0F5F9";
+    color: "#323335";
+    font-size: 16px;
+}
+
+QLineEdit[readOnly="true"] {
+    background-color: "#b9c6cf";
+}
+/********************************* QListView UI settings ***************************************/
+QListView {
+    width: 50px;
+    color: #F0F5F9;
+    font-size: 16px;
+}
+
+QListView::item:selected {
+    background-color: "#e95420"
+}
+
+/********************************* QCheckBox UI settings ***************************************/
+QCheckBox::indicator {
+    color: "red";
+}
+
+QCheckBox::indicator:checked {
+    color: "red";
+}
+
+/********************************* QDateTimeEdit UI settings ***************************************/
+QDateTimeEdit {
+    color: #F0F5F9;
+    border: 1px solid #424446;
+    font-size: 16px;
+}
+
+QDateTimeEdit:disabled {
+    color: #52616B;
+}
+
+.date {
+    color: #071;
+}
+
+SPAN {
+    color: #071;
+}
+
+QDateTimeEdit::up-arrow, QDateTimeEdit::down-arrow {
+    image: url(img/actdown.png);
+    /*border: 1px solid #1E2022B;*/
+}
+
+QDateTimeEdit::up-arrow:disabled, QDateTimeEdit::down-arrow:disabled {
+    image: url(img/down.png);
+}
+/********************************* Table UI settings ***************************************/
+QTableView {
+    background-color: "#f0f5f9";
+    alternate-background-color: "#c9d6df";
+    font-size: 14px;
+}
+
+QHeaderView {
+    background-color: "#52616B";
+    color: "#F0F5F9";
+}
+
+QTableView::item {
+    /*border: 1px solid "#fd1321";*/
+    color: #323335;
+}
+
+QHeaderView::section {
+    font-size: 16px;
+    background-color: #63717a;
+    alternate-background-color: "#63717";
+}
+
+QTableView::item:selected {
+    color: #F0F5F9;
+    background-color: #e95420;
+}
+
+QTableCornerButton::section {
+    background-color: #52616b;
+}
+
+QTableView::item:hover {
+    background-color: #BBBBBB;
+}
+
+QTableView::item:focus {
+
+}
+/********************************* Table UI settings ***************************************/
+
+/********************************* TabWidget UI settings ***************************************/
+QTabWidget {
+    background-color: red;
+    border: 0px;
+}
+
+QTabWidget::pane {
+    background-color:red;
+}
+
+QTabBar:top {
+    border: 1px solid white;
+}
+
+QTabBar:tab:top {
+    min-width: 132px;
+}
+
+QTabBar::tab {
+    background-color: #282a2c;
+    font-size: 16px;
+    color: #F0F5F9;
+    height: 27px;
+    border: 1px solid #424446;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding-bottom: 3px;
+    margin-right: 5px;
+}
+
+QTabBar::tab:selected {
+    background-color: #52616B;
+    color: #F0F5F9;
+}
+
+QTabWidget QLabel {
+    qproperty-alignment: AlignCenter;
+}
+/********************************* TabWidget UI settings ***************************************/
+
+QSpinBox, QDoubleSpinBox {
+    background-color: #F0F5F9;
+    color: "#323335";
+    font-size: 16px;
+    border-radius: 2px;
+    height: 26px;
+}
+
+QSpinBox::up-button, QSpinBox::down-button, QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {
+    width: 20px;
+    height: 12px;
+    background-color: #52616B;
+}
+
+QSpinBox::up-arrow, QDoubleSpinBox::up-arrow {
+    image: url(img/actup.png) no-repeat top;
+    width: 10px;
+    height: 10px;
+}
+
+QSpinBox::down-arrow, QDoubleSpinBox::down-arrow {
+    image: url(img/actdown.png) no-repeat bottom;
+    width: 10px;
+    height: 10px;
+}
+
+QSpinBox[readOnly="true"] {
+    background-color: "#b9c6cf";
+}
+
+QComboBox {
+    background-color: #F0F5F9;
+    color: #323335;
+    font-size: 16px;
+    /*padding: 0px 0px 0px 0px;*/
+    /*border: 1px solid red;*/
+}
+
+QComboBox::drop-down {
+    background-color: #52616B;
+    subcontrol-origin: padding;
+    subcontrol-position: center right;
+    border: 0px;
+    margin-right: -2px;
+    /*using palettes: #1E2022, #52616B, #C9D6DF, #F0F5F9, orange - #e95420*/
+}
+
+QComboBox::down-arrow {
+    image: url(img/actdown.png);
+    width: 10px;
+    height: 10px;
+}
+
+QComboBox:on {
+    background-color: #F0F5F9;
+}
+
+QComboBox QAbstractItemView {
+    selection-background-color: red;
+    background-color: #F0F5F9;
+    color: #323335;
+}
+
+QComboBox[enabled="false"] {
+    background-color: #b9c6cf;
+}
+
+/********************************* QMenuBarUI settings ***************************************/
+QMenuBar {
+    color: #F0F5F9;
+    background-color: #52616B;
+    border: 1px solid #1E2022;
+    font-size: 16px;
+}
+
+/*QMenuBar:selected {
+    background-color: #e95420;
+}*/
+
+QMenu {
+    background-color: #52616B;
+    border: 1px solid #1E2022;
+    font-size: 16px;
+    color: #F0F5F9;
+}
+
+QMenu::item:selected, QMenuBar::item:selected, QMenuBar::item:hover {
+    color: #F0F5F9;
+    background-color: #e95420;
+}
+/********************************* QMenuBar UI settings ***************************************/
+
+/********************************* QProgressBar UI settings ***************************************/
+ QProgressBar {
+     border: 1px solid #1b3557;
+     background-color: #f1f7ee;
+     border-radius: 5px;
+     text-align: center;
+     color: #1c3557;
+     font-size: 24px;
+ }
+
+ QProgressBar::chunk {
+     background-color: #467b9d;
+     /*width: 20px;
+     margin: 0.5px;*/
+ }
+/********************************* QProgressBar UI settings ***************************************/
