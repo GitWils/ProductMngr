@@ -38,24 +38,42 @@ class SplashScreen(QtWidgets.QSplashScreen):
             self.timer.stop()
 
 class Inset(QtWidgets.QWidget):
-    def __init__(self, table) -> None:
+    def __init__(self, table1, table2) -> None:
         super().__init__()
         self.layout = QtWidgets.QVBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.layout)
-        self._table = table
         self._buttons = list()
 
-        btnsWgt = QtWidgets.QTabWidget()
-        self.btnLayout = QtWidgets.QHBoxLayout()
-        self.btnLayout.setContentsMargins(0, 0, 0, 10)
+        self.tblLayout = Inset.getTblLayout()
+        self.tblLayout.addWidget(table1)
+        self.tblLayout.addWidget(table2)
+        tblWgt = QtWidgets.QWidget()
+        tblWgt.setLayout(self.tblLayout)
+        self.layout.addWidget(tblWgt)
+
+        self.btnLayout = Inset.getBtnLayout()
+        btnsWgt = QtWidgets.QWidget()
         btnsWgt.setLayout(self.btnLayout)
-        # btnLayout.addStretch(40)
-        self.btnLayout.setSpacing(40)
-        self.btnLayout.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignBottom)
-        self.layout.addWidget(table)
         self.layout.addWidget(btnsWgt)
-        self._table.clicked.connect(self.itemTableClicked)
+
+        table2.clicked.connect(self.itemTableClicked)
+
+    @staticmethod
+    def getTblLayout() -> QtWidgets.QHBoxLayout:
+        tblLayout = QtWidgets.QHBoxLayout()
+        # tblLayout.setContentsMargins(0, 0, 0, 10)
+        tblLayout.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignBottom)
+        return tblLayout
+
+    @staticmethod
+    def getBtnLayout() -> QtWidgets.QHBoxLayout:
+        btnLayout = QtWidgets.QHBoxLayout()
+        btnLayout.setContentsMargins(0, 0, 0, 10)
+        btnLayout.setSpacing(40)
+        btnLayout.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignBottom)
+        # btnLayout.addStretch(40)
+        return btnLayout
 
     def addButton(self,
                   func: Callable[[], None],
@@ -150,7 +168,7 @@ class Table(QtWidgets.QTableView):
         #self.setObjectName("table")
 
     def initColumnStyles(self) -> None:
-        self.setFixedHeight(400)
+        self.setFixedHeight(470)
         self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
         self.setAlternatingRowColors(True)
         self.setSortingEnabled(True)

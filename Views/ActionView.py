@@ -3,7 +3,7 @@ import Views.CustomWidgets as CustomWidgets
 from Models.Action import Action
 from datetime import datetime
 from pprint import pprint
-class ProductTable(CustomWidgets.Table):
+class ActionTable(CustomWidgets.Table):
 	def __init__(self, components: [Action] = None) -> None:
 		super().__init__()
 		self._components = components
@@ -15,7 +15,7 @@ class ProductTable(CustomWidgets.Table):
 		sti = TableModel(self._components)
 		self.reset()
 		sti.clear()
-		sti.setHorizontalHeaderLabels(['Найменування', 'Залишок (кг)', 'id'])
+		sti.setHorizontalHeaderLabels(['Найменування', 'Вага (кг)', 'Дата','Примітка', 'id'])
 		sti.setRowCount(len(self._components))
 		proxy_model = CustomSortFilterProxyModel()
 		proxy_model.setSourceModel(sti)
@@ -24,9 +24,10 @@ class ProductTable(CustomWidgets.Table):
 
 	def setDimensions(self) -> None:
 		self.setColumnWidth(0, 160)
-		self.setColumnWidth(1, 120)
-		self.setColumnHidden(2, True)
-		self.setFixedWidth(296)
+		self.setColumnWidth(1, 90)
+		self.setColumnWidth(2, 140)
+		self.setColumnWidth(3, 256)
+		self.setColumnHidden(4, True)
 		# header = self.horizontalHeader()
 		# header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
 
@@ -50,9 +51,20 @@ class TableModel(QtGui.QStandardItemModel):
 				case 1:
 					return f"{self._data[index.row()].getWeight():.2f}"
 				case 2:
+					return self._data[index.row()].getDate()
+					# return self._data[index.row()].getDate().strftime("%d.%m.%y")
+				case 3:
+					return self._data[index.row()].getNote()
+				case 4:
 					return self._data[index.row()].getId()
 				case 7:
 					return "0"
+					# return self._data[index.row()]['note']
+
+        # if (role == QtCore.Qt.ItemDataRole.BackgroundRole and
+        #         index.column() == 4 and
+        #         self._data[index.row()]['count'] < 0):
+        #     return QtGui.QColor('#d99')
 	def reloadData(self, data):
 		self._data = data
 
@@ -69,7 +81,7 @@ class CustomSortFilterProxyModel(QtCore.QSortFilterProxyModel):
 		elif left_index.column() == 1:
 			left_data = float(left_data)
 			right_data = float(right_data)
-		# elif left_index.column() == 2:
-		# 	left_data = datetime.strptime(left_data, "%H:%M %d.%m.%Y")
-		# 	right_data = datetime.strptime(right_data, "%H:%M %d.%m.%Y")
+		elif left_index.column() == 2:
+			left_data = datetime.strptime(left_data, "%H:%M %d.%m.%Y")
+			right_data = datetime.strptime(right_data, "%H:%M %d.%m.%Y")
 		return left_data < right_data
