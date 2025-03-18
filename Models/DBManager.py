@@ -30,8 +30,7 @@ class DBManager:
                             enable bool default true)""")
         if 'actions' not in self.con.tables():
             self.query.exec("""create table actions (id integer primary key autoincrement, 
-                            product_id integer secondary key,
-                            name text, 
+                            product_id integer secondary key,                            
                             weight float,
                             note text,                            
                             str_date text, dt datetime default current_timestamp, 
@@ -44,19 +43,33 @@ class DBManager:
                             enable bool default true)""")
         self.query.clear()
 
-    def saveProduct(self, name: str) -> int:
-        self.query.exec(f"""insert or ignore into products(name)
-            values('{name}')""")
+    def newProduct(self, name: str) -> int:
+        self.query.exec(f"""insert or ignore into products(name) values('{name}')""")
         productId = self.query.lastInsertId()
         self.query.clear()
         return productId
 
-    def saveAction(self, name: str, product_id: int, weight: float=0.0, note: str="") -> None:
-        date = self.getDateTime()
-        self.query.exec(f"""insert into actions (product_id, name, weight, note, str_date, dt)
-            values('{product_id}', '{name}', '{weight}', '{note}', '{date['s_date']}', '{date['datetime']}')""")
+    def updateProduct(self, name: str, product_id) -> None:
+        self.query.exec(f"""update products set name = '{name}' where id = '{product_id}'""")
         self.query.clear()
-        self.query.exec(f"""update products set counter=counter+1 WHERE id = '{product_id}'""")
+
+    def saveAction(self, product_id: int, weight: float=0.00, note: str="") -> None:
+        date = self.getDateTime()
+        self.query.exec(f"""insert into actions (product_id, weight, note, str_date, dt)
+            values('{product_id}', '{weight}', '{note}', '{date['s_date']}', '{date['datetime']}')""")
+        self.query.clear()
+        self.query.exec(f"""update products set counter=counter+1 where id = '{product_id}'""")
+        self.query.clear()
+
+    def updateAction(self, action_id: int, product_id: int, weight: float=0.00, note: str="") -> None:
+        date = self.getDateTime()
+        self.query.exec(f"""update actions set  
+            product_id='{product_id}', 
+            weight='{weight}', 
+            note = '{note}', 
+            str_date = '{date['s_date']}',
+            dt = '{date['datetime']}'
+            where id = '{action_id}'""")
         self.query.clear()
 
     def getProducts(self) -> []:
@@ -125,9 +138,6 @@ class DBManager:
         self.query.clear()
         self.query.exec(f"""delete from products where counter < 1""")
         self.query.clear()
-
-    def updateAction(self, action: Action) -> None:
-        pass
 
     # def delDepartmentById(self, department_id) -> None:
     #     self.query.exec(f"delete from products where id='{department_id}'")

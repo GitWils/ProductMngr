@@ -10,7 +10,7 @@ class ProductMngr:
 		self._actions = dict()
 		self.reloadAll()
 		#temp debug shows
-		print("Products:")
+		print("Products (ProductMngr.py __init__()):")
 		pprint(self._products)
 		print("Actions (ProductMngr.py __init__()):")
 		for key, item in self._actions.items():
@@ -44,7 +44,7 @@ class ProductMngr:
 		return self._db.getLogs()
 
 	def addProduct(self, name: str) -> int:
-		productId = self._db.saveProduct(name)
+		productId = self._db.newProduct(name)
 		if productId is None:
 			productId = self._db.getProductIdByName(name)
 		self.reloadProducts()
@@ -55,32 +55,37 @@ class ProductMngr:
 		self.reloadActions()
 
 	def reloadProducts(self) -> None:
+		# self._products.clear()
 		self._products = self._db.getProducts()
 
 	def reloadActions(self) -> None:
 		self._actions.clear()
 		self._actions = self._db.getActions()
+
 	def addAction(self, product: str, weight: float, note: str) -> None:
 	# def addPost(self, post: Post) -> None:
 		productId = self.addProduct(product)
-		self._db.saveAction(product, productId, weight, note)
+		self._db.saveAction(productId, weight, note)
 		msg = f'передано <span style="text-decoration: underline">{product}</span> '\
-			f'вагою <span style="text-decoration: underline">{product}</span>, кг'
+			f'вагою <span style="text-decoration: underline">{weight}</span>, кг'
 		self._db.saveLogMsg(msg)
 		self.reloadActions()
 
-	def delPost(self, action: Action) -> None:
+	def delAction(self, action: Action) -> None:
 		self._db.delActionById(action.getId(), action.getProductId())
-		msg = f'видалено посаду <span style="text-decoration: underline">{action.getName()}</span> '\
-				f'у відділі <span style="text-decoration: underline">{action.getName()}</span>, '
+		msg = f'видалено дію <span style="text-decoration: underline">{action.getName()}</span> '\
+				f'вагою <span style="text-decoration: underline">{action.getWeight()}</span>, '
 		self._db.saveLogMsg(msg)
 		self.reloadActions()
 
-	def editPost(self,
-	             original_post: Action,
-	             department: str,
-	             post: str,
-	             cnt: int
+	def editAction(self,
+	             original_action: Action,
+	             product: str,
+	             weight: float,
+	             note: str
 	             ) -> None:
-
-		self.reloadActions()
+		if product != original_action.getName():
+			self._db.updateProduct(product, original_action.getProductId())
+		if weight != original_action.getWeight() or note != original_action.getNote():
+			self._db.updateAction(original_action.getId(), original_action.getProductId(), weight, note)
+		self.reloadAll()

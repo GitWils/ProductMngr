@@ -63,7 +63,7 @@ QTextEdit, QLineEdit {
     font-size: 16px;
 }
 
-QLineEdit[readOnly="true"] {
+QTextEdit[enabled="false"], QLineEdit[enabled="false"] {
     background-color: "#b9c6cf";
 }
 /********************************* QListView UI settings ***************************************/
@@ -220,7 +220,7 @@ QSpinBox::down-arrow, QDoubleSpinBox::down-arrow {
     height: 10px;
 }
 
-QSpinBox[readOnly="true"] {
+QSpinBox[enabled="false"], QDoubleSpinBox[enabled="false"] {
     background-color: "#b9c6cf";
 }
 
@@ -229,7 +229,6 @@ QComboBox {
     color: #323335;
     font-size: 16px;
     /*padding: 0px 0px 0px 0px;*/
-    /*border: 1px solid red;*/
 }
 
 QComboBox::drop-down {

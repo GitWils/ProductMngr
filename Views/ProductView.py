@@ -25,10 +25,10 @@ class Product(CustomWidgets.Table):
 
 	def setDimensions(self) -> None:
 		self.setColumnWidth(0, 200)
-		self.setColumnWidth(1, 150)
-		self.setColumnWidth(2, 200)
+		self.setColumnWidth(1, 90)
+		self.setColumnWidth(2, 140)
 		self.setColumnWidth(3, 400)
-		#self.setColumnHidden(4, True)
+		self.setColumnHidden(4, True)
 		# header = self.horizontalHeader()
 		# header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
 

@@ -15,7 +15,7 @@ class ProductDlg(QDialog):
 		# self.setWindowFlags(self.windowFlags() & ~Qt.WindowType.WindowMaximizeButtonHint)
 		self._dlgGrid = CustomWidgets.DialogGrid()
 		self._drawProductField('Найменування продукту:')
-		self._weight = self._dlgGrid.addFloatBox('Вага (кг):')
+		self._wgtWeight = self._dlgGrid.addFloatBox('Вага (кг):')
 		self._wgtNote = self._dlgGrid.addNote('Примітка:')
 		self._bbox = self._dlgGrid.addButtonBox(True, acceptedFunc = self.accept, rejectedFunc=self.reject)
 		self.setLayout(self._dlgGrid.getGrid())
@@ -51,7 +51,7 @@ class ProductDlg(QDialog):
 		pass
 
 	def getWeight(self) -> float:
-		return self._weight.value()
+		return self._wgtWeight.value()
 
 	def getNote(self) -> str:
 		return self._wgtNote.toPlainText()
@@ -79,14 +79,15 @@ class EditProductDlg(ProductDlg):
 		if self.getProduct() == self._action.getName()\
 			and self.getWeight() == self._action.getWeight()\
 			and self.getNote() == self._action.getNote():
-			self.setMsg('Жоден параметр не змінено!\nВведіть значення, або натисніть "Скасувати"')
+			self.setMsg('Жоден параметр не змінено!\nЗмініть значення, або натисніть "Скасувати"')
+			print(f'Note = {self._action.getNote()}')
 		else:
 			super().accept()
 
 	def _initValues(self) -> None:
 		self.setWindowTitle("Редагування посади")
-		self._weight.setValue(self._action.getWeight())
-		# self._wgtNote.setValue(self._post.getId())
+		self._wgtWeight.setValue(self._action.getWeight())
+		self._wgtNote.setText(self._action.getNote())
 
 	def _drawProductField(self, name: str) -> None:
 		self._productName = self._dlgGrid.addLineEdit(name, self._action.getName())
@@ -101,18 +102,18 @@ class DelProductDlg(ProductDlg):
 
 	def _initValues(self) -> None:
 		self.setWindowTitle("Видалення запису")
-		self._weight.setValue(self._action.getWeight())
-		# self._wgtNote.setValue(self._post.getId())
+		self._wgtWeight.setValue(self._action.getWeight())
+		self._wgtNote.setText(self._action.getNote())
 		self._bbox.setBtnOkText('Видалити')
-		self._setReadonlyAll()
+		self._setEnabledAll(False)
 
 	def _drawProductField(self, name: str) -> None:
 		self._productName = self._dlgGrid.addLineEdit(name, self._action.getName())
 
-	def _setReadonlyAll(self) -> None:
-		self._productName.setReadOnly(True)
-		self._weight.setReadOnly(True)
-		self._wgtNote.setReadOnly(True)
+	def _setEnabledAll(self, enabled: bool=True) -> None:
+		self._productName.setEnabled(enabled)
+		self._wgtWeight.setEnabled(enabled)
+		self._wgtNote.setEnabled(enabled)
 
 	def getProduct(self) -> str:
 		return self._productName.text()

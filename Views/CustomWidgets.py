@@ -203,7 +203,7 @@ class Logger(QtWidgets.QTextEdit):
         self.clear()
         msg = ''
         for log in logs:
-            msg += f'<br>{log[1][0:5]}<span style="text-decoration: underline">{log[1][6:]}</span> {log[0]}'
+            msg += f'<br>{log[1][0:5]} <span style="text-decoration: underline">{log[1][6:]}</span> {log[0]}'
         self.insertHtml(msg[4:])
         self.ensureCursorVisible()
 

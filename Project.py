@@ -14,7 +14,7 @@ class Project(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self._productMngr = ProductMngr()
-        self._nomenclatureTable = None
+        self._actionTable = None
         self._employeesTable = None
         self._logArea = CustomWidgets.Logger()
 
@@ -40,8 +40,8 @@ class Project(QtWidgets.QWidget):
     @Timing
     def createNomenclatureTab(self):
         """ nomenclature tab contents creation """
-        self._nomenclatureTable = ProductView.Product(self._productMngr.getActionsList())
-        tab = CustomWidgets.Inset(self._nomenclatureTable)
+        self._actionTable = ProductView.Product(self._productMngr.getActionsList())
+        tab = CustomWidgets.Inset(self._actionTable)
         tab.addButton(self.NewNomenclatureBtn, CustomWidgets.DlgMode.New, True, 'Оформити переміщення')
         editBtn = tab.addButton(self.EditNomenclatureBtn, CustomWidgets.DlgMode.Edit, False, 'Редагувати переміщення')
         delBtn = tab.addButton(self.DelNomenclatureBtn, CustomWidgets.DlgMode.Del, False, 'Видалити переміщення')
@@ -63,30 +63,33 @@ class Project(QtWidgets.QWidget):
         if result:
             self._productMngr.addAction(dialog.getProduct(), dialog.getWeight(), dialog.getNote())
             self._logArea.showContent(self._productMngr.getLogs())
-            self._nomenclatureTable.loadData(self._productMngr.getActionsList())
+            self._actionTable.loadData(self._productMngr.getActionsList())
 
     def EditNomenclatureBtn(self):
-        print(f"{self._nomenclatureTable.getSelectedRowId()} was clicked")
-        currentPost = self._productMngr.getActionById(self._nomenclatureTable.getSelectedRowId())
+        print(f"{self._actionTable.getSelectedRowId()} was clicked")
+        currentAction = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
         dialog = Dialogs.EditProductDlg(self._productMngr.getProductsList(),
-                            self._productMngr.getActionById(self._nomenclatureTable.getSelectedRowId()))
+                            self._productMngr.getActionById(self._actionTable.getSelectedRowId()))
         dialog.move(self._getInitPos())
         result = dialog.exec()
         if result:
-            # self._productMngr.editPost(currentPost,
-            #                             dialog.getPost()
-            #                            )
-            print("Натиснуто 'Зберегти'")
+            self._productMngr.editAction(currentAction,
+                                         dialog.getProduct(),
+                                         dialog.getWeight(),
+                                         dialog.getNote()
+                                       )
+            self._logArea.showContent(self._productMngr.getLogs())
+            self._actionTable.loadData(self._productMngr.getActionsList())
 
     def DelNomenclatureBtn(self):
-        currentPost = self._productMngr.getActionById(self._nomenclatureTable.getSelectedRowId())
+        currentPost = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
         dialog = Dialogs.DelProductDlg(self._productMngr.getProductsList(), currentPost)
         dialog.move(self._getInitPos())
         result = dialog.exec()
         if result:
-            self._productMngr.delPost(currentPost)
+            self._productMngr.delAction(currentPost)
             self._logArea.showContent(self._productMngr.getLogs())
-            self._nomenclatureTable.loadData(self._productMngr.getActionsList())
+            self._actionTable.loadData(self._productMngr.getActionsList())
 
     def NewEmployeeBtn(self):
         print("new employee button was clicked")
