@@ -59,10 +59,12 @@ class TableModel(QtGui.QStandardItemModel):
 					return self._data[index.row()].getNote()
 				case 4:
 					return self._data[index.row()].getId()
-		# if (role == QtCore.Qt.ItemDataRole.BackgroundRole and
-        #         index.column() == 4 and
-        #         self._data[index.row()]['count'] < 0):
-        #     return QtGui.QColor('#d99')
+		if role == QtCore.Qt.ItemDataRole.BackgroundRole and index.column() == 1:
+			val = float(self._data[index.row()].getWeight())
+			if val < 0:
+				return QtGui.QColor('#caa')
+			elif val > 0:
+				return QtGui.QColor('#aca')
 		return None
 
 	def reloadData(self, data):

@@ -53,8 +53,8 @@ class Project(QtWidgets.QWidget):
     def _getInitPos(self) -> QPoint:
         """ calculation the starting position point of dialog"""
         dlgPos = self.mapToGlobal(self.pos())
-        dlgPos.setY(dlgPos.y() - 30)
-        dlgPos.setX(dlgPos.x() + 50)
+        dlgPos.setX(dlgPos.x() + 170)
+        dlgPos.setY(dlgPos.y() + 80)
         return dlgPos
 
     def AddActionBtn(self):

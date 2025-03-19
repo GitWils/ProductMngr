@@ -67,21 +67,32 @@ class DBManager:
 
     def newAction(self, product_id: int, weight: float=0.00, note: str="") -> None:
         date = self.getDateTime()
-        self.query.exec(f"""insert into actions (product_id, weight, note, str_date, dt)
-            values('{product_id}', '{weight}', '{note}', '{date['s_date']}', '{date['datetime']}')""")
+        self.query.prepare(f"""insert into actions (product_id, weight, note, str_date, dt)
+                    values(:product_id, :weight, :note, :str_date, :dt)""")
+        self.query.bindValue(':product_id', product_id)
+        self.query.bindValue(':weight',     weight)
+        self.query.bindValue(':note',       note)
+        self.query.bindValue(':str_date',   date['s_date'])
+        self.query.bindValue(':dt',         date['datetime'])
+        self.query.exec()
         self.query.clear()
-        self.query.exec(f"""update products set counter=counter+1 where id = '{product_id}'""")
+        self.query.prepare("""update products set counter=counter+1 where id = :product_id""")
+        self.query.bindValue(':product_id', product_id)
+        self.query.exec()
         self.query.clear()
 
     def updateAction(self, action_id: int, product_id: int, weight: float=0.00, note: str="") -> None:
         date = self.getDateTime()
-        self.query.exec(f"""update actions set  
-            product_id='{product_id}', 
-            weight='{weight}', 
-            note = '{note}', 
-            str_date = '{date['s_date']}',
-            dt = '{date['datetime']}'
-            where id = '{action_id}'""")
+        self.query.prepare("""update actions set  
+            product_id = :product_id, weight = :weight, note = :note, str_date = :str_date, dt = :dt
+            where id = :id""")
+        self.query.bindValue(':product_id', product_id)
+        self.query.bindValue(':weight', weight)
+        self.query.bindValue(':note', note)
+        self.query.bindValue(':str_date', date['s_date'])
+        self.query.bindValue(':dt', date['datetime'])
+        self.query.bindValue(':id', action_id)
+        self.query.exec()
         self.query.clear()
 
     def getProducts(self) -> []:
@@ -106,21 +117,6 @@ class DBManager:
         self.query.clear()
         return lst
 
-# select
-#     products.id,
-#     products.name,
-#     products.counter,
-#     sum(actions.weight) as total_amount
-# from
-#     products
-# join
-#     actions on(products.id = actions.product_id)
-# where
-#     products.enable = True and actions.enable = True
-# group by
-#     actions.product_id
-
-
     def getActions(self) -> dict[int, Action]:
         self.query.exec(
             "select * from actions left join products on (products.id=actions.product_id) where actions.enable=True order by id")
@@ -142,7 +138,9 @@ class DBManager:
         return lst
 
     def getProductIdByName(self, name: str) -> int:
-        self.query.exec(f"select id from products where name='{name}' order by id")
+        self.query.prepare("select id from products where name = :name order by id")
+        self.query.bindValue(':name', name)
+        self.query.exec()
         res = 0
         if self.query.isActive():
             self.query.first()
@@ -165,16 +163,16 @@ class DBManager:
         return lst
 
     def delActionById(self, action_id, product_id) -> None:
-        self.query.exec(f"delete from actions where id='{action_id}'")
-        # self.query.clear()
-        self.query.exec(f"""update products set counter=counter-1 WHERE id = '{product_id}'""")
-        # self.query.clear()
-        self.query.exec(f"""delete from products where counter < 1""")
+        self.query.prepare("delete from actions where id = :id")
+        self.query.bindValue(':id', action_id)
+        self.query.exec()
         self.query.clear()
-
-    # def delDepartmentById(self, department_id) -> None:
-    #     self.query.exec(f"delete from products where id='{department_id}'")
-    #     self.query.clear()
+        self.query.prepare("update products set counter=counter-1 WHERE id = :id")
+        self.query.bindValue(':id', product_id)
+        self.query.exec()
+        self.query.clear()
+        self.query.exec("delete from products where counter < 1")
+        self.query.clear()
 
     def newLogMsg(self, msg):
         date = self.getDateTime()
