@@ -6,7 +6,8 @@ from enum import Enum, auto
 import sys
 
 class DlgMode(Enum):
-    New = auto()
+    Add = auto()
+    Sub = auto()
     Edit = auto()
     Del = auto()
 
@@ -82,8 +83,10 @@ class Inset(QtWidgets.QWidget):
                   tooltip: str
                   ) -> QtWidgets.QPushButton:
         match mode_type:
-            case DlgMode.New:
+            case DlgMode.Add:
                 filename = 'new.png'
+            case DlgMode.Sub:
+                filename = 'minus.png'
             case DlgMode.Edit:
                 filename = 'edit.png'
             case DlgMode.Del:

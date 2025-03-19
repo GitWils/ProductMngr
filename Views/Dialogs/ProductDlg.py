@@ -56,12 +56,26 @@ class ProductDlg(QDialog):
 	def getNote(self) -> str:
 		return self._wgtNote.toPlainText()
 
-class NewProductDlg(ProductDlg):
-	def __init__(self, departments, existingIds: []=[]) -> None:
+class AddProductDlg(ProductDlg):
+	def __init__(self, departments, existingIds: []) -> None:
 		super().__init__(departments, existingIds = existingIds)
 
 	def _initValues(self) -> None:
-		self.setWindowTitle("Створення нової посади")
+		self.setWindowTitle("Отримання продукту")
+
+	def _drawProductField(self, name: str) -> None:
+		self._productName = self._dlgGrid.addEditBox(name)
+		self._productName.addItems(self._departments)
+
+	def getProduct(self) -> str:
+		return self._productName.currentText()
+
+class SubtractProductDlg(ProductDlg):
+	def __init__(self, departments, existingIds: []) -> None:
+		super().__init__(departments, existingIds = existingIds)
+
+	def _initValues(self) -> None:
+		self.setWindowTitle("Віддати продукт в роботу")
 
 	def _drawProductField(self, name: str) -> None:
 		self._productName = self._dlgGrid.addEditBox(name)
@@ -71,7 +85,7 @@ class NewProductDlg(ProductDlg):
 		return self._productName.currentText()
 
 class EditProductDlg(ProductDlg):
-	def __init__(self, products: [], action: [], existingIds: []=[]) -> None:
+	def __init__(self, products: [], action: [], existingIds: []) -> None:
 		self._action = action
 		super().__init__(products, existingIds = existingIds)
 

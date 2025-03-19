@@ -28,6 +28,7 @@ class DBManager:
                             name text unique,
                             counter integer default 0, 
                             enable bool default true)""")
+            self.query.clear()
         if 'actions' not in self.con.tables():
             self.query.exec("""create table actions (id integer primary key autoincrement, 
                             product_id integer secondary key,                            
@@ -35,25 +36,36 @@ class DBManager:
                             note text,                            
                             str_date text, dt datetime default current_timestamp, 
                             enable bool default true)""")
+            self.query.clear()
         if 'logs' not in self.con.tables():
             self.query.exec("""create table logs (id integer primary key autoincrement, 
                             message text, 
                             str_date text, 
                             dt datetime default current_timestamp, 
                             enable bool default true)""")
-        self.query.clear()
+            self.query.clear()
 
     def newProduct(self, name: str) -> int:
-        self.query.exec(f"""insert or ignore into products(name) values('{name}')""")
-        productId = self.query.lastInsertId()
+        product_id = 0
+        self.query.prepare("select id from products where name = ?")
+        self.query.addBindValue(name)
+        if self.query.exec() and self.query.next():
+            product_id = self.query.value(0)
+        else:
+            self.query.clear()
+            self.query.prepare("insert into products(name) values(?)")
+            self.query.addBindValue(name)
+            if self.query.exec():
+                product_id = self.query.lastInsertId()
         self.query.clear()
-        return productId
+        print(f"product {name} id = {product_id}")
+        return product_id
 
     def updateProduct(self, name: str, product_id) -> None:
         self.query.exec(f"""update products set name = '{name}' where id = '{product_id}'""")
         self.query.clear()
 
-    def saveAction(self, product_id: int, weight: float=0.00, note: str="") -> None:
+    def newAction(self, product_id: int, weight: float=0.00, note: str="") -> None:
         date = self.getDateTime()
         self.query.exec(f"""insert into actions (product_id, weight, note, str_date, dt)
             values('{product_id}', '{weight}', '{note}', '{date['s_date']}', '{date['datetime']}')""")
@@ -73,20 +85,41 @@ class DBManager:
         self.query.clear()
 
     def getProducts(self) -> []:
-        self.query.exec("select * from products where enable=True order by id")
+        self.query.exec("""select 
+                            products.id, products.name, products.counter, sum(actions.weight) as total_amount                        
+                            from products 
+                            join actions on(products.id = actions.product_id)
+                            where products.enable = True and actions.enable = True
+                            group by actions.product_id""")
         lst = []
         if self.query.isActive():
             self.query.first()
             while self.query.isValid():
                 arr = dict({
-                    'id':       self.query.value('id'),
-                    'name':     self.query.value('name'),
-                    'counter':  self.query.value('counter')
+                    'id':       self.query.value('products.id'),
+                    'name':     self.query.value('products.name'),
+                    'counter':  self.query.value('products.counter'),
+                    'sum':      self.query.value('total_amount')
                 })
                 lst.append(arr)
                 self.query.next()
         self.query.clear()
         return lst
+
+# select
+#     products.id,
+#     products.name,
+#     products.counter,
+#     sum(actions.weight) as total_amount
+# from
+#     products
+# join
+#     actions on(products.id = actions.product_id)
+# where
+#     products.enable = True and actions.enable = True
+# group by
+#     actions.product_id
+
 
     def getActions(self) -> dict[int, Action]:
         self.query.exec(
@@ -128,14 +161,14 @@ class DBManager:
                 arr = [self.query.value('message'), self.query.value('str_date')]
                 lst.append(arr)
                 self.query.next()
+        self.query.clear()
         return lst
 
     def delActionById(self, action_id, product_id) -> None:
-        print(f'product_id = {product_id}, action_id = {action_id}')
         self.query.exec(f"delete from actions where id='{action_id}'")
-        self.query.clear()
+        # self.query.clear()
         self.query.exec(f"""update products set counter=counter-1 WHERE id = '{product_id}'""")
-        self.query.clear()
+        # self.query.clear()
         self.query.exec(f"""delete from products where counter < 1""")
         self.query.clear()
 
@@ -143,7 +176,7 @@ class DBManager:
     #     self.query.exec(f"delete from products where id='{department_id}'")
     #     self.query.clear()
 
-    def saveLogMsg(self, msg):
+    def newLogMsg(self, msg):
         date = self.getDateTime()
         self.query.prepare("insert into logs values(null, :message, :str_date, :dt, True)")
         self.query.bindValue(':message', msg)

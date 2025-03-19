@@ -1,4 +1,4 @@
-from PyQt6 import QtGui, QtWidgets, QtCore
+from PyQt6 import QtGui, QtCore
 import Views.CustomWidgets as CustomWidgets
 from Models.Action import Action
 from datetime import datetime
@@ -37,11 +37,13 @@ class ActionTable(CustomWidgets.Table):
 		return self.model().data(NewIndex)
 
 class TableModel(QtGui.QStandardItemModel):
-	def __init__(self, data=[Action]):
+	def __init__(self, data :[Action]):
 		super(TableModel, self).__init__()
 		self._data = data
 
-	def data(self, index, role):
+	def data(self, index, role=QtCore.Qt.ItemDataRole.DisplayRole):
+		if not index.isValid():
+			return None
 		if role == QtCore.Qt.ItemDataRole.TextAlignmentRole: # and index.column() != 1
 			return QtCore.Qt.AlignmentFlag.AlignCenter
 		if role == QtCore.Qt.ItemDataRole.DisplayRole:
@@ -57,14 +59,12 @@ class TableModel(QtGui.QStandardItemModel):
 					return self._data[index.row()].getNote()
 				case 4:
 					return self._data[index.row()].getId()
-				case 7:
-					return "0"
-					# return self._data[index.row()]['note']
-
-        # if (role == QtCore.Qt.ItemDataRole.BackgroundRole and
+		# if (role == QtCore.Qt.ItemDataRole.BackgroundRole and
         #         index.column() == 4 and
         #         self._data[index.row()]['count'] < 0):
         #     return QtGui.QColor('#d99')
+		return None
+
 	def reloadData(self, data):
 		self._data = data
 

@@ -22,6 +22,9 @@ class ProductMngr:
 			res.append(product['name'])
 		return res
 
+	def getProducts(self) -> []:
+		return self._products
+
 	def getActionsList(self) -> []:
 		res = []
 		for key, val in self._actions.items():
@@ -45,8 +48,6 @@ class ProductMngr:
 
 	def addProduct(self, name: str) -> int:
 		productId = self._db.newProduct(name)
-		if productId is None:
-			productId = self._db.getProductIdByName(name)
 		self.reloadProducts()
 		return productId
 
@@ -63,20 +64,23 @@ class ProductMngr:
 		self._actions = self._db.getActions()
 
 	def addAction(self, product: str, weight: float, note: str) -> None:
-	# def addPost(self, post: Post) -> None:
 		productId = self.addProduct(product)
-		self._db.saveAction(productId, weight, note)
-		msg = f'передано <span style="text-decoration: underline">{product}</span> '\
-			f'вагою <span style="text-decoration: underline">{weight}</span>, кг'
-		self._db.saveLogMsg(msg)
-		self.reloadActions()
+		self._db.newAction(productId, weight, note)
+		if weight > 0:
+			msg = f'отримано <span style="text-decoration: underline">{product}</span> '\
+				f'вагою <span style="text-decoration: underline">{weight}</span>, кг'
+		else:
+			msg = f'передано в роботу <span style="text-decoration: underline">{product}</span> ' \
+			      f'вагою <span style="text-decoration: underline">{-weight}</span>, кг'
+		self._db.newLogMsg(msg)
+		self.reloadAll()
 
 	def delAction(self, action: Action) -> None:
 		self._db.delActionById(action.getId(), action.getProductId())
 		msg = f'видалено дію <span style="text-decoration: underline">{action.getName()}</span> '\
 				f'вагою <span style="text-decoration: underline">{action.getWeight()}</span>, '
-		self._db.saveLogMsg(msg)
-		self.reloadActions()
+		self._db.newLogMsg(msg)
+		self.reloadAll()
 
 	def editAction(self,
 	             original_action: Action,

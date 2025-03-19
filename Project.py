@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt, QPoint
 
 import Views.Dialogs.ProductDlg as Dialogs
 import Views.ProductView as ProductView
+import Views.ActionView as ActionView
 import Views.CustomWidgets as CustomWidgets
 from Models.ProductManager import ProductMngr
 from Decorators import Timing
@@ -15,6 +16,7 @@ class Project(QtWidgets.QWidget):
         super().__init__()
         self._productMngr = ProductMngr()
         self._actionTable = None
+        self._productTable = None
         self._employeesTable = None
         self._logArea = CustomWidgets.Logger()
 
@@ -24,7 +26,6 @@ class Project(QtWidgets.QWidget):
         centralLayout = QtWidgets.QVBoxLayout()
         self.setLayout(centralLayout)
         lblLog = QtWidgets.QLabel("Журнал подій:")
-        # self._logArea.addMessage("log message", "12.01.2005 8:18")
         centralLayout.addWidget(self._initTabs())
         centralLayout.addWidget(lblLog)
         centralLayout.addWidget(self._logArea, Qt.AlignmentFlag.AlignBottom)
@@ -32,19 +33,21 @@ class Project(QtWidgets.QWidget):
 
     def _initTabs(self):
         tabs = QtWidgets.QTabWidget()
-        tabs.addTab(self.createNomenclatureTab(), "Продукт")
+        tabs.addTab(self.createProductsTab(), "Продукти")
         tabs.addTab(QtWidgets.QLabel("Тут могла бути ваша реклама"), "Звіт")
         tabs.setCurrentIndex(0)
         return tabs
 
     @Timing
-    def createNomenclatureTab(self):
+    def createProductsTab(self):
         """ nomenclature tab contents creation """
-        self._actionTable = ProductView.Product(self._productMngr.getActionsList())
-        tab = CustomWidgets.Inset(self._actionTable)
-        tab.addButton(self.NewNomenclatureBtn, CustomWidgets.DlgMode.New, True, 'Оформити переміщення')
-        editBtn = tab.addButton(self.EditNomenclatureBtn, CustomWidgets.DlgMode.Edit, False, 'Редагувати переміщення')
-        delBtn = tab.addButton(self.DelNomenclatureBtn, CustomWidgets.DlgMode.Del, False, 'Видалити переміщення')
+        self._productTable = ProductView.ProductTable(self._productMngr.getProducts())
+        self._actionTable = ActionView.ActionTable(self._productMngr.getActionsList())
+        tab = CustomWidgets.Inset(self._productTable, self._actionTable)
+        tab.addButton(self.AddActionBtn, CustomWidgets.DlgMode.Add, True, 'Добавити продукт')
+        subBtn = tab.addButton(self.SubtractActionBtn, CustomWidgets.DlgMode.Sub, True, 'Забрати продукт')
+        editBtn = tab.addButton(self.EditActionBtn, CustomWidgets.DlgMode.Edit, False, 'Редагувати переміщення')
+        delBtn = tab.addButton(self.DelActionBtn, CustomWidgets.DlgMode.Del, False, 'Видалити переміщення')
         return tab
 
     def _getInitPos(self) -> QPoint:
@@ -54,22 +57,35 @@ class Project(QtWidgets.QWidget):
         dlgPos.setX(dlgPos.x() + 50)
         return dlgPos
 
-    def NewNomenclatureBtn(self):
-        """ if the new button was clicked """
-        dialog = Dialogs.NewProductDlg(departments = self._productMngr.getProductsList(),
-                                            existingIds = self._productMngr.getActionsIdList())
+    def AddActionBtn(self):
+        """ if the add action button was clicked """
+        dialog = Dialogs.AddProductDlg(departments = self._productMngr.getProductsList(),
+                                        existingIds = self._productMngr.getActionsIdList())
         dialog.move(self._getInitPos())
         result = dialog.exec()
         if result:
             self._productMngr.addAction(dialog.getProduct(), dialog.getWeight(), dialog.getNote())
             self._logArea.showContent(self._productMngr.getLogs())
-            self._actionTable.loadData(self._productMngr.getActionsList())
+            self.ReloadTables()
 
-    def EditNomenclatureBtn(self):
+    def SubtractActionBtn(self):
+        """ if subtract action button was clicked """
+        dialog = Dialogs.SubtractProductDlg(departments = self._productMngr.getProductsList(),
+                                            existingIds = self._productMngr.getActionsIdList())
+        dialog.move(self._getInitPos())
+        result = dialog.exec()
+        if result:
+            self._productMngr.addAction(dialog.getProduct(), -dialog.getWeight(), dialog.getNote())
+            self._logArea.showContent(self._productMngr.getLogs())
+            self.ReloadTables()
+
+    def EditActionBtn(self):
+        """ if edit action button was clicked """
         print(f"{self._actionTable.getSelectedRowId()} was clicked")
         currentAction = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
         dialog = Dialogs.EditProductDlg(self._productMngr.getProductsList(),
-                            self._productMngr.getActionById(self._actionTable.getSelectedRowId()))
+                            self._productMngr.getActionById(self._actionTable.getSelectedRowId()),
+                            [])
         dialog.move(self._getInitPos())
         result = dialog.exec()
         if result:
@@ -79,9 +95,10 @@ class Project(QtWidgets.QWidget):
                                          dialog.getNote()
                                        )
             self._logArea.showContent(self._productMngr.getLogs())
-            self._actionTable.loadData(self._productMngr.getActionsList())
+            self.ReloadTables()
 
-    def DelNomenclatureBtn(self):
+    def DelActionBtn(self):
+        """ if delete action button was clicked """
         currentPost = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
         dialog = Dialogs.DelProductDlg(self._productMngr.getProductsList(), currentPost)
         dialog.move(self._getInitPos())
@@ -89,16 +106,11 @@ class Project(QtWidgets.QWidget):
         if result:
             self._productMngr.delAction(currentPost)
             self._logArea.showContent(self._productMngr.getLogs())
-            self._actionTable.loadData(self._productMngr.getActionsList())
+            self.ReloadTables()
 
-    def NewEmployeeBtn(self):
-        print("new employee button was clicked")
-
-    def EditEmployeeBtn(self):
-        print("edit employee button was clicked")
-
-    def DelEmployeeBtn(self):
-        print("del employee button was clicked")
+    def ReloadTables(self):
+        self._actionTable.loadData(self._productMngr.getActionsList())
+        self._productTable.loadData(self._productMngr.getProducts())
 
     # def topLeft(self):
     #     qr = self.frameGeometry()

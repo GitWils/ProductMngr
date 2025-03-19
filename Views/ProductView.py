@@ -1,12 +1,11 @@
-from PyQt6 import QtGui, QtWidgets, QtCore
+from PyQt6 import QtGui, QtCore
 import Views.CustomWidgets as CustomWidgets
 from Models.Action import Action
-from datetime import datetime
 from pprint import pprint
 class ProductTable(CustomWidgets.Table):
-	def __init__(self, components: [Action] = None) -> None:
+	def __init__(self, products: [] = None) -> None:
 		super().__init__()
-		self._components = components
+		self._components = products
 		self.loadData(self._components)
 
 	def loadData(self, components: [Action]) -> None:
@@ -36,23 +35,25 @@ class ProductTable(CustomWidgets.Table):
 		return self.model().data(NewIndex)
 
 class TableModel(QtGui.QStandardItemModel):
-	def __init__(self, data=[Action]):
+	def __init__(self, data: [Action]):
 		super(TableModel, self).__init__()
 		self._data = data
 
-	def data(self, index, role):
+	def data(self, index, role=QtCore.Qt.ItemDataRole.DisplayRole):
+		if not index.isValid():
+			return None
 		if role == QtCore.Qt.ItemDataRole.TextAlignmentRole: # and index.column() != 1
 			return QtCore.Qt.AlignmentFlag.AlignCenter
 		if role == QtCore.Qt.ItemDataRole.DisplayRole:
 			match index.column():
 				case 0:
-					return self._data[index.row()].getName()
+					return self._data[index.row()]['name']
 				case 1:
-					return f"{self._data[index.row()].getWeight():.2f}"
+					return f"{self._data[index.row()]['sum']:.2f}"
 				case 2:
-					return self._data[index.row()].getId()
-				case 7:
-					return "0"
+					return self._data[index.row()]['id']
+		return None
+
 	def reloadData(self, data):
 		self._data = data
 
@@ -69,7 +70,4 @@ class CustomSortFilterProxyModel(QtCore.QSortFilterProxyModel):
 		elif left_index.column() == 1:
 			left_data = float(left_data)
 			right_data = float(right_data)
-		# elif left_index.column() == 2:
-		# 	left_data = datetime.strptime(left_data, "%H:%M %d.%m.%Y")
-		# 	right_data = datetime.strptime(right_data, "%H:%M %d.%m.%Y")
 		return left_data < right_data
