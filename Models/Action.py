@@ -1,13 +1,13 @@
 from datetime import datetime
 
 class Filter:
-	def __init__(self, product_id=0):
+	def __init__(self, product_id=0) -> None:
 		self._productId = product_id
 
 	def setProductId(self, product_id: int) -> None:
 		self._productId = product_id
 
-	def getProductId(self):
+	def getProductId(self) -> int:
 		return self._productId
 
 class Action:

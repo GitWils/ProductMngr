@@ -5,13 +5,12 @@ from pprint import pprint
 from abc import ABC, abstractmethod
 
 class ProductDlg(QDialog):
-	def __init__(self, departments: [], existingIds: []=[]) -> None:
+	def __init__(self, products: []) -> None:
 		super().__init__()
 		self.setWindowModality(Qt.WindowModality.ApplicationModal)
 		self.setFixedWidth(700)
 		self.setMinimumHeight(400)
-		self._departments = departments
-		self._existingIds = existingIds
+		self._products = products
 		# self.setWindowFlags(self.windowFlags() & ~Qt.WindowType.WindowMaximizeButtonHint)
 		self._dlgGrid = CustomWidgets.DialogGrid()
 		self._drawProductField('Найменування продукту:')
@@ -24,10 +23,8 @@ class ProductDlg(QDialog):
 	def accept(self) -> None:
 		if len(self.getProduct()) == 0:
 			self.setMsg('Введіть назву продукту!')
-		# elif len(self.getPost()) == 0:
-		# 	self.setMsg('Введіть найменування посади!')
-		# elif self.getNomenclatureId() < 1:
-		# 	self.setMsg('Номер підрозділу повинен бути більше 0!')
+		elif self.getWeight() == 0.00:
+			self.setMsg('Вага не може мати нульове значення!')
 		else:
 			super().accept()
 
@@ -46,77 +43,106 @@ class ProductDlg(QDialog):
 	def reject(self) -> None:
 		super().reject()
 
-	@abstractmethod
-	def getProduct(self) -> None:
-		pass
+	def getProduct(self) -> str:
+		return ""
 
 	def getWeight(self) -> float:
 		return self._wgtWeight.value()
 
 	def getNote(self) -> str:
-		return self._wgtNote.toPlainText()
+		return self._wgtNote.toPlainText().strip()
+
+	def getProductsList(self) -> []:
+		res = []
+		for product in self._products:
+			res.append(product['name'])
+		return res
+
+	# def getActionsIdList(self) -> []:
+	# 	res = []
+	# 	for key, val in self._actions.items():
+	# 		res.append(key)
+	# 	return res
 
 class AddProductDlg(ProductDlg):
-	def __init__(self, departments, existingIds: []) -> None:
-		super().__init__(departments, existingIds = existingIds)
+	def __init__(self, products: []) -> None:
+		super().__init__(products)
 
 	def _initValues(self) -> None:
 		self.setWindowTitle("Отримання продукту")
 
 	def _drawProductField(self, name: str) -> None:
 		self._productName = self._dlgGrid.addEditBox(name)
-		self._productName.addItems(self._departments)
+		self._productName.addItems(self.getProductsList())
 
 	def getProduct(self) -> str:
-		return self._productName.currentText()
+		return self._productName.currentText().strip()
 
 class SubtractProductDlg(ProductDlg):
-	def __init__(self, departments, existingIds: []) -> None:
-		super().__init__(departments, existingIds = existingIds)
+	def __init__(self, products: []) -> None:
+		super().__init__(products)
 
 	def _initValues(self) -> None:
 		self.setWindowTitle("Віддати продукт в роботу")
 
 	def _drawProductField(self, name: str) -> None:
 		self._productName = self._dlgGrid.addEditBox(name)
-		self._productName.addItems(self._departments)
+		self._productName.addItems(self.getProductsList())
 
 	def getProduct(self) -> str:
-		return self._productName.currentText()
+		return self._productName.currentText().strip()
+
+	def accept(self) -> None:
+		for item in self._products:
+			if self.getProduct() == item['name'] and self.getWeight() > item['sum']:
+				self.setMsg('Не вистачає продукту, перевірте залишки!')
+				return
+		super().accept()
 
 class EditProductDlg(ProductDlg):
-	def __init__(self, products: [], action: [], existingIds: []) -> None:
+	def __init__(self, products: [], action: []) -> None:
 		self._action = action
-		super().__init__(products, existingIds = existingIds)
+		super().__init__(products)
 
 	def accept(self) -> None:
 		if self.getProduct() == self._action.getName()\
 			and self.getWeight() == self._action.getWeight()\
 			and self.getNote() == self._action.getNote():
 			self.setMsg('Жоден параметр не змінено!\nЗмініть значення, або натисніть "Скасувати"')
-			print(f'Note = {self._action.getNote()}')
-		else:
-			super().accept()
+			return
+		elif self.getProduct() == self._action.getName():
+			for item in self._products:
+				if (self._action.getName() == item['name']
+					  and self._action.getWeight() - self.getSign() * self.getWeight() > item['sum']):
+					self.setMsg('Не вистачає продукту, перевірте залишки!')
+					return
+		super().accept()
+
+	def getSign(self) -> int:
+		sign = 1
+		if self._action.getWeight() < 0:
+			sign = -1
+		return sign
 
 	def _initValues(self) -> None:
-		self.setWindowTitle("Редагування посади")
-		self._wgtWeight.setValue(self._action.getWeight())
+		self.setWindowTitle("Редагування запису")
+		self._wgtWeight.setValue(abs(self._action.getWeight()))
 		self._wgtNote.setText(self._action.getNote())
 
 	def _drawProductField(self, name: str) -> None:
 		self._productName = self._dlgGrid.addLineEdit(name, self._action.getName())
 
 	def getProduct(self) -> str:
-		return self._productName.text()
+		return self._productName.text().strip()
 
 class DelProductDlg(ProductDlg):
-	def __init__(self, products: [], action: [], existingIds: []=[]):
+	def __init__(self, products: [], action: []):
 		self._action = action
-		super().__init__(products, existingIds = existingIds)
+		super().__init__(products)
 
 	def _initValues(self) -> None:
 		self.setWindowTitle("Видалення запису")
-		self._wgtWeight.setValue(self._action.getWeight())
+		self._wgtWeight.setValue(abs(self._action.getWeight()))
 		self._wgtNote.setText(self._action.getNote())
 		self._bbox.setBtnOkText('Видалити')
 		self._setEnabledAll(False)
@@ -130,4 +156,4 @@ class DelProductDlg(ProductDlg):
 		self._wgtNote.setEnabled(enabled)
 
 	def getProduct(self) -> str:
-		return self._productName.text()
+		return self._productName.text().strip()

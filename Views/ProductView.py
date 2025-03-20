@@ -1,3 +1,5 @@
+from tkinter import BooleanVar
+
 from PyQt6 import QtGui, QtCore
 import Views.CustomWidgets as CustomWidgets
 from Models.Action import Action
@@ -27,8 +29,6 @@ class ProductTable(CustomWidgets.Table):
 		self.setColumnWidth(1, 120)
 		self.setColumnHidden(2, True)
 		self.setFixedWidth(296)
-		# header = self.horizontalHeader()
-		# header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
 
 	def getSelectedRowId(self):
 		index = self.currentIndex()

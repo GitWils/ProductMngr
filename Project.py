@@ -65,8 +65,7 @@ class Project(QtWidgets.QWidget):
 
     def addActionBtn(self):
         """ if the add action button was clicked """
-        dialog = Dialogs.AddProductDlg(departments = self._productMngr.getProductsList(),
-                                        existingIds = self._productMngr.getActionsIdList())
+        dialog = Dialogs.AddProductDlg(self._productMngr.getProducts())
         dialog.move(self._getInitPos())
         result = dialog.exec()
         if result:
@@ -76,8 +75,7 @@ class Project(QtWidgets.QWidget):
 
     def subtractActionBtn(self):
         """ if subtract action button was clicked """
-        dialog = Dialogs.SubtractProductDlg(departments = self._productMngr.getProductsList(),
-                                            existingIds = self._productMngr.getActionsIdList())
+        dialog = Dialogs.SubtractProductDlg(self._productMngr.getProducts())
         dialog.move(self._getInitPos())
         result = dialog.exec()
         if result:
@@ -88,15 +86,13 @@ class Project(QtWidgets.QWidget):
     def editActionBtn(self):
         """ if edit action button was clicked """
         currentAction = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
-        dialog = Dialogs.EditProductDlg(self._productMngr.getProductsList(),
-                            self._productMngr.getActionById(self._actionTable.getSelectedRowId()),
-                            [])
+        dialog = Dialogs.EditProductDlg(self._productMngr.getProducts(), self._productMngr.getActionById(self._actionTable.getSelectedRowId()))
         dialog.move(self._getInitPos())
         result = dialog.exec()
         if result:
             self._productMngr.editAction(currentAction,
                                          dialog.getProduct(),
-                                         dialog.getWeight(),
+                                         dialog.getSign() * dialog.getWeight(),
                                          dialog.getNote()
                                        )
             self._logArea.showContent(self._productMngr.getLogs())
@@ -104,12 +100,12 @@ class Project(QtWidgets.QWidget):
 
     def DelActionBtn(self):
         """ if delete action button was clicked """
-        currentPost = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
-        dialog = Dialogs.DelProductDlg(self._productMngr.getProductsList(), currentPost)
+        currentAction = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
+        dialog = Dialogs.DelProductDlg(self._productMngr.getProducts(), currentAction)
         dialog.move(self._getInitPos())
         result = dialog.exec()
         if result:
-            self._productMngr.delAction(currentPost)
+            self._productMngr.delAction(currentAction)
             self._logArea.showContent(self._productMngr.getLogs())
             self.ReloadTables()
 

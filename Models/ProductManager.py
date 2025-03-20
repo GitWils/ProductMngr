@@ -16,12 +16,6 @@ class ProductMngr:
 		for key, item in self._actions.items():
 			print(f"   {item}")
 
-	def getProductsList(self) -> []:
-		res = []
-		for product in self._products:
-			res.append(product['name'])
-		return res
-
 	def getProducts(self) -> []:
 		return self._products
 

@@ -26,16 +26,14 @@ class DBManager:
         if 'products' not in self.con.tables():
             self.query.exec("""create table products (id integer primary key autoincrement, 
                             name text unique,
-                            counter integer default 0, 
-                            enable bool default true)""")
+                            counter integer default 0)""")
             self.query.clear()
         if 'actions' not in self.con.tables():
             self.query.exec("""create table actions (id integer primary key autoincrement, 
                             product_id integer secondary key,                            
                             weight float,
                             note text,                            
-                            str_date text, dt datetime default current_timestamp, 
-                            enable bool default true)""")
+                            str_date text, dt datetime default current_timestamp)""")
             self.query.clear()
         if 'logs' not in self.con.tables():
             self.query.exec("""create table logs (id integer primary key autoincrement, 
@@ -99,8 +97,7 @@ class DBManager:
         self.query.exec("""select 
                             products.id, products.name, products.counter, sum(actions.weight) as total_amount                        
                             from products 
-                            join actions on(products.id = actions.product_id)
-                            where products.enable = True and actions.enable = True
+                            join actions on(products.id = actions.product_id)                            
                             group by actions.product_id""")
         lst = []
         if self.query.isActive():
@@ -120,7 +117,7 @@ class DBManager:
     def getActions(self, fltr: Filter) -> dict[int, Action]:
         self.query.prepare(
             """select * from actions left join products on (products.id=actions.product_id) 
-            where actions.enable=True and actions.product_id=:product_id order by id""")
+            where actions.product_id=:product_id order by id""")
         self.query.bindValue(':product_id', fltr.getProductId())
         self.query.exec()
         lst = {}
@@ -152,7 +149,7 @@ class DBManager:
         self.query.clear()
         return res
 
-    def getLogs(self):
+    def getLogs(self) -> []:
         #self.query.exec("select * from logs order by id limit 20")
         self.query.exec("select * from logs order by id")
         lst = []
@@ -165,7 +162,7 @@ class DBManager:
         self.query.clear()
         return lst
 
-    def delActionById(self, action_id, product_id) -> None:
+    def delActionById(self, action_id: int, product_id: int) -> None:
         self.query.prepare("delete from actions where id = :id")
         self.query.bindValue(':id', action_id)
         self.query.exec()
@@ -177,7 +174,7 @@ class DBManager:
         self.query.exec("delete from products where counter < 1")
         self.query.clear()
 
-    def newLogMsg(self, msg):
+    def newLogMsg(self, msg: str):
         date = self.getDateTime()
         self.query.prepare("insert into logs values(null, :message, :str_date, :dt, True)")
         self.query.bindValue(':message', msg)
