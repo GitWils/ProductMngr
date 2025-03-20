@@ -44,11 +44,17 @@ class Project(QtWidgets.QWidget):
         self._productTable = ProductView.ProductTable(self._productMngr.getProducts())
         self._actionTable = ActionView.ActionTable(self._productMngr.getActionsList())
         tab = CustomWidgets.Inset(self._productTable, self._actionTable)
-        tab.addButton(self.AddActionBtn, CustomWidgets.DlgMode.Add, True, 'Добавити продукт')
-        subBtn = tab.addButton(self.SubtractActionBtn, CustomWidgets.DlgMode.Sub, True, 'Забрати продукт')
-        editBtn = tab.addButton(self.EditActionBtn, CustomWidgets.DlgMode.Edit, False, 'Редагувати переміщення')
+        tab.addButton(self.addActionBtn, CustomWidgets.DlgMode.Add, True, 'Добавити продукт')
+        subBtn = tab.addButton(self.subtractActionBtn, CustomWidgets.DlgMode.Sub, True, 'Забрати продукт')
+        editBtn = tab.addButton(self.editActionBtn, CustomWidgets.DlgMode.Edit, False, 'Редагувати переміщення')
         delBtn = tab.addButton(self.DelActionBtn, CustomWidgets.DlgMode.Del, False, 'Видалити переміщення')
+        self._productTable.clicked.connect(self.showActions)
+        self._actionTable.doubleClicked.connect(self.editActionBtn)
         return tab
+
+    def showActions(self):
+        self._productMngr.setFilterID(self._productTable.getSelectedRowId())
+        self.ReloadTables()
 
     def _getInitPos(self) -> QPoint:
         """ calculation the starting position point of dialog"""
@@ -57,7 +63,7 @@ class Project(QtWidgets.QWidget):
         dlgPos.setY(dlgPos.y() + 80)
         return dlgPos
 
-    def AddActionBtn(self):
+    def addActionBtn(self):
         """ if the add action button was clicked """
         dialog = Dialogs.AddProductDlg(departments = self._productMngr.getProductsList(),
                                         existingIds = self._productMngr.getActionsIdList())
@@ -68,7 +74,7 @@ class Project(QtWidgets.QWidget):
             self._logArea.showContent(self._productMngr.getLogs())
             self.ReloadTables()
 
-    def SubtractActionBtn(self):
+    def subtractActionBtn(self):
         """ if subtract action button was clicked """
         dialog = Dialogs.SubtractProductDlg(departments = self._productMngr.getProductsList(),
                                             existingIds = self._productMngr.getActionsIdList())
@@ -79,9 +85,8 @@ class Project(QtWidgets.QWidget):
             self._logArea.showContent(self._productMngr.getLogs())
             self.ReloadTables()
 
-    def EditActionBtn(self):
+    def editActionBtn(self):
         """ if edit action button was clicked """
-        print(f"{self._actionTable.getSelectedRowId()} was clicked")
         currentAction = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
         dialog = Dialogs.EditProductDlg(self._productMngr.getProductsList(),
                             self._productMngr.getActionById(self._actionTable.getSelectedRowId()),
@@ -108,7 +113,7 @@ class Project(QtWidgets.QWidget):
             self._logArea.showContent(self._productMngr.getLogs())
             self.ReloadTables()
 
-    def ReloadTables(self):
+    def ReloadTables(self) -> None:
         self._actionTable.loadData(self._productMngr.getActionsList())
         self._productTable.loadData(self._productMngr.getProducts())
 

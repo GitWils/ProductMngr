@@ -11,7 +11,7 @@ import sys
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Програма")
+        self.setWindowTitle("Облік продукту")
         self.setFixedSize(1000, 750)
         self.centerWindow()
         self._initUI()

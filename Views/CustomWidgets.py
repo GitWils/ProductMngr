@@ -18,8 +18,10 @@ class SplashScreen(QtWidgets.QSplashScreen):
         self.setPixmap(splash_pix)
         # Додаємо прогрес-бар
         self.progress = QtWidgets.QProgressBar(self)
-        self.progress.setGeometry(100, splash_pix.height() - 160,
-                                  splash_pix.width() - 200, 40)
+        self.progress.setGeometry(100,
+                                  splash_pix.height() - 160,
+                                  splash_pix.width() - 200,
+                                  40)
         # Таймер для оновлення прогресу
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_progress)

@@ -3,6 +3,7 @@ import Views.CustomWidgets as CustomWidgets
 from Models.Action import Action
 from datetime import datetime
 from pprint import pprint
+
 class ActionTable(CustomWidgets.Table):
 	def __init__(self, components: [Action] = None) -> None:
 		super().__init__()

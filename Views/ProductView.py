@@ -2,6 +2,7 @@ from PyQt6 import QtGui, QtCore
 import Views.CustomWidgets as CustomWidgets
 from Models.Action import Action
 from pprint import pprint
+
 class ProductTable(CustomWidgets.Table):
 	def __init__(self, products: [] = None) -> None:
 		super().__init__()
@@ -31,7 +32,7 @@ class ProductTable(CustomWidgets.Table):
 
 	def getSelectedRowId(self):
 		index = self.currentIndex()
-		NewIndex = self.model().index(index.row(), 4)
+		NewIndex = self.model().index(index.row(), 2)
 		return self.model().data(NewIndex)
 
 class TableModel(QtGui.QStandardItemModel):

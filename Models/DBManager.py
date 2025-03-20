@@ -1,7 +1,7 @@
 import datetime
 from PyQt6 import QtSql
 from Decorators import Singleton, Timing
-from Models.Action import Action
+from Models.Action import Action, Filter
 
 from pprint import pprint
 
@@ -117,9 +117,12 @@ class DBManager:
         self.query.clear()
         return lst
 
-    def getActions(self) -> dict[int, Action]:
-        self.query.exec(
-            "select * from actions left join products on (products.id=actions.product_id) where actions.enable=True order by id")
+    def getActions(self, fltr: Filter) -> dict[int, Action]:
+        self.query.prepare(
+            """select * from actions left join products on (products.id=actions.product_id) 
+            where actions.enable=True and actions.product_id=:product_id order by id""")
+        self.query.bindValue(':product_id', fltr.getProductId())
+        self.query.exec()
         lst = {}
         if self.query.isActive():
             self.query.first()

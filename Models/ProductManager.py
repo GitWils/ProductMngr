@@ -1,13 +1,13 @@
 from Models.DBManager import DBManager
-from Models.Action import Action
+from Models.Action import Action, Filter
 from pprint import pprint
-
 
 class ProductMngr:
 	def __init__(self) -> None:
 		self._db = DBManager()
 		self._products = []
 		self._actions = dict()
+		self._filter = Filter(0)
 		self.reloadAll()
 		#temp debug shows
 		print("Products (ProductMngr.py __init__()):")
@@ -61,7 +61,7 @@ class ProductMngr:
 
 	def reloadActions(self) -> None:
 		self._actions.clear()
-		self._actions = self._db.getActions()
+		self._actions = self._db.getActions(self._filter)
 
 	def addAction(self, product: str, weight: float, note: str) -> None:
 		productId = self.addProduct(product)
@@ -93,3 +93,7 @@ class ProductMngr:
 		if weight != original_action.getWeight() or note != original_action.getNote():
 			self._db.updateAction(original_action.getId(), original_action.getProductId(), weight, note)
 		self.reloadAll()
+
+	def setFilterID(self, product_id: int) -> None:
+		self._filter.setProductId(product_id)
+		self.reloadActions()
