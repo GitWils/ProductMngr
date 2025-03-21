@@ -29,6 +29,7 @@ class ActionTable(CustomWidgets.Table):
 		self.setColumnWidth(2, 140)
 		self.setColumnWidth(3, 256)
 		self.setColumnHidden(4, True)
+		self.setMinimumWidth(500)
 		# header = self.horizontalHeader()
 		# header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
 

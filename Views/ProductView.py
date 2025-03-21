@@ -28,9 +28,9 @@ class ProductTable(CustomWidgets.Table):
 		self.setColumnWidth(0, 160)
 		self.setColumnWidth(1, 120)
 		self.setColumnHidden(2, True)
-		self.setFixedWidth(296)
+		self.setFixedWidth(298)
 
-	def getSelectedRowId(self):
+	def getSelectedRowId(self) -> int:
 		index = self.currentIndex()
 		NewIndex = self.model().index(index.row(), 2)
 		return self.model().data(NewIndex)

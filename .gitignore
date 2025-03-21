@@ -2,3 +2,6 @@ __pycache__/
 myenv/
 .idea
 data.s
+build/
+dist/
+main.spec

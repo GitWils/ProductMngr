@@ -119,10 +119,9 @@ class EditProductDlg(ProductDlg):
 		super().accept()
 
 	def getSign(self) -> int:
-		sign = 1
 		if self._action.getWeight() < 0:
-			sign = -1
-		return sign
+			return -1
+		return 1
 
 	def _initValues(self) -> None:
 		self.setWindowTitle("Редагування запису")
@@ -136,7 +135,7 @@ class EditProductDlg(ProductDlg):
 		return self._productName.text().strip()
 
 class DelProductDlg(ProductDlg):
-	def __init__(self, products: [], action: []):
+	def __init__(self, products: [], action: []) -> None:
 		self._action = action
 		super().__init__(products)
 

@@ -134,6 +134,7 @@ QHeaderView::section {
     font-size: 16px;
     background-color: #63717a;
     alternate-background-color: "#63717";
+    font: regular;
 }
 
 QTableView::item:selected {

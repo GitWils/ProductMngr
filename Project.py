@@ -18,6 +18,8 @@ class Project(QtWidgets.QWidget):
         self._actionTable = None
         self._productTable = None
         self._employeesTable = None
+        self._editBtn = None
+        self._delBtn = None
         self._logArea = CustomWidgets.Logger()
 
         self.initMenu()
@@ -40,21 +42,22 @@ class Project(QtWidgets.QWidget):
 
     @Timing
     def createProductsTab(self):
-        """ nomenclature tab contents creation """
+        """ products tab contents creation """
         self._productTable = ProductView.ProductTable(self._productMngr.getProducts())
         self._actionTable = ActionView.ActionTable(self._productMngr.getActionsList())
         tab = CustomWidgets.Inset(self._productTable, self._actionTable)
         tab.addButton(self.addActionBtn, CustomWidgets.DlgMode.Add, True, 'Добавити продукт')
         subBtn = tab.addButton(self.subtractActionBtn, CustomWidgets.DlgMode.Sub, True, 'Забрати продукт')
-        editBtn = tab.addButton(self.editActionBtn, CustomWidgets.DlgMode.Edit, False, 'Редагувати переміщення')
-        delBtn = tab.addButton(self.DelActionBtn, CustomWidgets.DlgMode.Del, False, 'Видалити переміщення')
+        self._editBtn = tab.addButton(self.editActionBtn, CustomWidgets.DlgMode.Edit, False, 'Редагувати переміщення')
+        self._delBtn = tab.addButton(self.delActionBtn, CustomWidgets.DlgMode.Del, False, 'Видалити переміщення')
         self._productTable.clicked.connect(self.showActions)
         self._actionTable.doubleClicked.connect(self.editActionBtn)
         return tab
 
     def showActions(self):
         self._productMngr.setFilterID(self._productTable.getSelectedRowId())
-        self.ReloadTables()
+        self.reloadTables()
+        self.deactivateBtns()
 
     def _getInitPos(self) -> QPoint:
         """ calculation the starting position point of dialog"""
@@ -71,7 +74,7 @@ class Project(QtWidgets.QWidget):
         if result:
             self._productMngr.addAction(dialog.getProduct(), dialog.getWeight(), dialog.getNote())
             self._logArea.showContent(self._productMngr.getLogs())
-            self.ReloadTables()
+            self.reloadTables()
 
     def subtractActionBtn(self):
         """ if subtract action button was clicked """
@@ -81,35 +84,45 @@ class Project(QtWidgets.QWidget):
         if result:
             self._productMngr.addAction(dialog.getProduct(), -dialog.getWeight(), dialog.getNote())
             self._logArea.showContent(self._productMngr.getLogs())
-            self.ReloadTables()
+            self.reloadTables()
 
     def editActionBtn(self):
         """ if edit action button was clicked """
-        currentAction = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
-        dialog = Dialogs.EditProductDlg(self._productMngr.getProducts(), self._productMngr.getActionById(self._actionTable.getSelectedRowId()))
-        dialog.move(self._getInitPos())
-        result = dialog.exec()
-        if result:
-            self._productMngr.editAction(currentAction,
-                                         dialog.getProduct(),
-                                         dialog.getSign() * dialog.getWeight(),
-                                         dialog.getNote()
-                                       )
-            self._logArea.showContent(self._productMngr.getLogs())
-            self.ReloadTables()
+        if self._actionTable.getSelectedRowId():
+            currentAction = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
+            dialog = Dialogs.EditProductDlg(self._productMngr.getProducts(), self._productMngr.getActionById(self._actionTable.getSelectedRowId()))
+            dialog.move(self._getInitPos())
+            result = dialog.exec()
+            if result:
+                self._productMngr.editAction(currentAction,
+                                             dialog.getProduct(),
+                                             dialog.getSign() * dialog.getWeight(),
+                                             dialog.getNote()
+                                           )
+                self._logArea.showContent(self._productMngr.getLogs())
+                self.reloadTables()
+        else:
+            self.deactivateBtns()
 
-    def DelActionBtn(self):
+    def delActionBtn(self):
         """ if delete action button was clicked """
-        currentAction = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
-        dialog = Dialogs.DelProductDlg(self._productMngr.getProducts(), currentAction)
-        dialog.move(self._getInitPos())
-        result = dialog.exec()
-        if result:
-            self._productMngr.delAction(currentAction)
-            self._logArea.showContent(self._productMngr.getLogs())
-            self.ReloadTables()
+        if self._actionTable.getSelectedRowId():
+            currentAction = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
+            dialog = Dialogs.DelProductDlg(self._productMngr.getProducts(), currentAction)
+            dialog.move(self._getInitPos())
+            result = dialog.exec()
+            if result:
+                self._productMngr.delAction(currentAction)
+                self._logArea.showContent(self._productMngr.getLogs())
+                self.reloadTables()
+        else:
+            self.deactivateBtns()
 
-    def ReloadTables(self) -> None:
+    def deactivateBtns(self) -> None:
+        self._editBtn.setActive(False)
+        self._delBtn.setActive(False)
+
+    def reloadTables(self) -> None:
         self._actionTable.loadData(self._productMngr.getActionsList())
         self._productTable.loadData(self._productMngr.getProducts())
 

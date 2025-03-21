@@ -56,7 +56,6 @@ class DBManager:
             if self.query.exec():
                 product_id = self.query.lastInsertId()
         self.query.clear()
-        print(f"product {name} id = {product_id}")
         return product_id
 
     def updateProduct(self, name: str, product_id) -> None:

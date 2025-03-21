@@ -60,7 +60,7 @@ class Inset(QtWidgets.QWidget):
         btnsWgt.setLayout(self.btnLayout)
         self.layout.addWidget(btnsWgt)
 
-        table2.clicked.connect(self.itemTableClicked)
+        table2.clicked.connect(self.setActiveBtns)
 
     @staticmethod
     def getTblLayout() -> QtWidgets.QHBoxLayout:
@@ -101,10 +101,9 @@ class Inset(QtWidgets.QWidget):
         self._buttons.append(btn)
         return btn
 
-    def itemTableClicked(self) -> None:
-        """ new template save button clicked was"""
+    def setActiveBtns(self, status: bool) -> None:
         for btn in self._buttons:
-            btn.setActive(True)
+            btn.setActive(status)
 
 class EditBtn(QtWidgets.QPushButton):
     def __init__(self, filename: str, active: bool, tooltip: str = '') -> None:
@@ -173,7 +172,7 @@ class Table(QtWidgets.QTableView):
         #self.setObjectName("table")
 
     def initColumnStyles(self) -> None:
-        self.setFixedHeight(470)
+        self.setMinimumHeight(470)
         self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
         self.setAlternatingRowColors(True)
         self.setSortingEnabled(True)

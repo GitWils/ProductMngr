@@ -12,7 +12,8 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Облік продукту")
-        self.setFixedSize(1000, 750)
+        # self.setFixedSize(1004, 750)
+        self.setMinimumSize(1004, 750)
         self.centerWindow()
         self._initUI()
 
@@ -21,8 +22,6 @@ class MainWindow(QtWidgets.QMainWindow):
         ico = QIcon("img/logo.png")
         self.setWindowIcon(ico)
         self.setMenuBar(self._createMenuBar())
-
-        # Створюємо центральний віджет
         self.pr = Project()
         self.setCentralWidget(self.pr)
 
@@ -71,7 +70,6 @@ def main():
     # ico = QIcon("img/logo.png")
     # app.setWindowIcon(ico)
     window = MainWindow()
-    # Показуємо головне вікно і закриваємо заставку
     window.show()
     splash.finish(window)
     sys.exit(app.exec())
