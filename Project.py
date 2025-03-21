@@ -101,8 +101,6 @@ class Project(QtWidgets.QWidget):
                                            )
                 self._logArea.showContent(self._productMngr.getLogs())
                 self.reloadTables()
-        else:
-            self.deactivateBtns()
 
     def delActionBtn(self):
         """ if delete action button was clicked """
@@ -115,8 +113,6 @@ class Project(QtWidgets.QWidget):
                 self._productMngr.delAction(currentAction)
                 self._logArea.showContent(self._productMngr.getLogs())
                 self.reloadTables()
-        else:
-            self.deactivateBtns()
 
     def deactivateBtns(self) -> None:
         self._editBtn.setActive(False)

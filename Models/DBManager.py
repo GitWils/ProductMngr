@@ -32,7 +32,8 @@ class DBManager:
             self.query.exec("""create table actions (id integer primary key autoincrement, 
                             product_id integer secondary key,                            
                             weight float,
-                            note text,                            
+                            note text,        
+                            blocked bool default false,                    
                             str_date text, dt datetime default current_timestamp)""")
             self.query.clear()
         if 'logs' not in self.con.tables():
