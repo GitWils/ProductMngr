@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QDialog
 from PyQt6.QtCore import Qt
-import Views.CustomWidgets as CustomWidgets
+import Views.Widgets.CustomWidgets as CustomWidgets
+from Views.Widgets.DialogGrid import DialogGrid
 from pprint import pprint
 from abc import ABC, abstractmethod
 
@@ -12,7 +13,7 @@ class ProductDlg(QDialog):
 		self.setMinimumHeight(400)
 		self._products = products
 		# self.setWindowFlags(self.windowFlags() & ~Qt.WindowType.WindowMaximizeButtonHint)
-		self._dlgGrid = CustomWidgets.DialogGrid()
+		self._dlgGrid = DialogGrid()
 		self._drawProductField('Найменування продукту:')
 		self._wgtWeight = self._dlgGrid.addFloatBox('Вага (кг):')
 		self._wgtNote = self._dlgGrid.addNote('Примітка:')
@@ -58,12 +59,6 @@ class ProductDlg(QDialog):
 			res.append(product['name'])
 		return res
 
-	# def getActionsIdList(self) -> []:
-	# 	res = []
-	# 	for key, val in self._actions.items():
-	# 		res.append(key)
-	# 	return res
-
 class AddProductDlg(ProductDlg):
 	def __init__(self, products: []) -> None:
 		super().__init__(products)
@@ -93,10 +88,16 @@ class SubtractProductDlg(ProductDlg):
 		return self._productName.currentText().strip()
 
 	def accept(self) -> None:
+		present = False
 		for item in self._products:
+			if self.getProduct() == item['name']:
+				present = True
 			if self.getProduct() == item['name'] and self.getWeight() > item['sum']:
 				self.setMsg('Не вистачає продукту, перевірте залишки!')
 				return
+		if not  present:
+			self.setMsg(f'Не вистачає продукту, перевірте залишки!')
+			return
 		super().accept()
 
 class EditProductDlg(ProductDlg):

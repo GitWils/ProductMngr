@@ -4,7 +4,8 @@ from PyQt6.QtCore import Qt, QPoint
 import Views.Dialogs.ProductDlg as Dialogs
 import Views.ProductView as ProductView
 import Views.ActionView as ActionView
-import Views.CustomWidgets as CustomWidgets
+import Views.Widgets.CustomWidgets as CustomWidgets
+from Views.Widgets.ProductsTable import ProductsTable
 from Models.ProductManager import ProductMngr
 from Decorators import Timing
 
@@ -45,7 +46,7 @@ class Project(QtWidgets.QWidget):
         """ products tab contents creation """
         self._productTable = ProductView.ProductTable(self._productMngr.getProducts())
         self._actionTable = ActionView.ActionTable(self._productMngr.getActionsList())
-        tab = CustomWidgets.Inset(self._productTable, self._actionTable)
+        tab = ProductsTable(self._productTable, self._actionTable)
         tab.addButton(self.addActionBtn, CustomWidgets.DlgMode.Add, True, 'Добавити продукт')
         subBtn = tab.addButton(self.subtractActionBtn, CustomWidgets.DlgMode.Sub, True, 'Забрати продукт')
         self._editBtn = tab.addButton(self.editActionBtn, CustomWidgets.DlgMode.Edit, False, 'Редагувати переміщення')
@@ -55,6 +56,7 @@ class Project(QtWidgets.QWidget):
         return tab
 
     def showActions(self):
+        """ showing table with product actions """
         self._productMngr.setFilterID(self._productTable.getSelectedRowId())
         self.reloadTables()
         self.deactivateBtns()

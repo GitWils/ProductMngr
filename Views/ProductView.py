@@ -1,7 +1,7 @@
 from tkinter import BooleanVar
 
 from PyQt6 import QtGui, QtCore
-import Views.CustomWidgets as CustomWidgets
+import Views.Widgets.CustomWidgets as CustomWidgets
 from Models.Action import Action
 from pprint import pprint
 

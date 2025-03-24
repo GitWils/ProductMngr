@@ -149,19 +149,6 @@ class DBManager:
         self.query.clear()
         return res
 
-    def getLogs(self) -> []:
-        #self.query.exec("select * from logs order by id limit 20")
-        self.query.exec("select * from logs order by id")
-        lst = []
-        if self.query.isActive():
-            self.query.first()
-            while self.query.isValid():
-                arr = [self.query.value('message'), self.query.value('str_date')]
-                lst.append(arr)
-                self.query.next()
-        self.query.clear()
-        return lst
-
     def delActionById(self, action_id: int, product_id: int) -> None:
         self.query.prepare("delete from actions where id = :id")
         self.query.bindValue(':id', action_id)
@@ -174,7 +161,21 @@ class DBManager:
         self.query.exec("delete from products where counter < 1")
         self.query.clear()
 
+    def getLogs(self) -> []:
+        """ returns array of logs """
+        self.query.exec("select * from logs order by id desc limit 30")
+        lst = []
+        if self.query.isActive():
+            self.query.first()
+            while self.query.isValid():
+                arr = [self.query.value('message'), self.query.value('str_date')]
+                lst.append(arr)
+                self.query.next()
+        self.query.clear()
+        return lst
+
     def newLogMsg(self, msg: str):
+        """ new log massage creating """
         date = self.getDateTime()
         self.query.prepare("insert into logs values(null, :message, :str_date, :dt, True)")
         self.query.bindValue(':message', msg)

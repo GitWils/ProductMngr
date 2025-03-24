@@ -40,71 +40,6 @@ class SplashScreen(QtWidgets.QSplashScreen):
         if self.progress_value >= 100:
             self.timer.stop()
 
-class Inset(QtWidgets.QWidget):
-    def __init__(self, table1, table2) -> None:
-        super().__init__()
-        self.layout = QtWidgets.QVBoxLayout()
-        self.layout.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(self.layout)
-        self._buttons = list()
-
-        self.tblLayout = Inset.getTblLayout()
-        self.tblLayout.addWidget(table1)
-        self.tblLayout.addWidget(table2)
-        tblWgt = QtWidgets.QWidget()
-        tblWgt.setLayout(self.tblLayout)
-        self.layout.addWidget(tblWgt)
-
-        self.btnLayout = Inset.getBtnLayout()
-        btnsWgt = QtWidgets.QWidget()
-        btnsWgt.setLayout(self.btnLayout)
-        self.layout.addWidget(btnsWgt)
-
-        table2.clicked.connect(self.setActiveBtns)
-
-    @staticmethod
-    def getTblLayout() -> QtWidgets.QHBoxLayout:
-        tblLayout = QtWidgets.QHBoxLayout()
-        # tblLayout.setContentsMargins(0, 0, 0, 10)
-        tblLayout.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignBottom)
-        return tblLayout
-
-    @staticmethod
-    def getBtnLayout() -> QtWidgets.QHBoxLayout:
-        btnLayout = QtWidgets.QHBoxLayout()
-        btnLayout.setContentsMargins(0, 0, 0, 10)
-        btnLayout.setSpacing(40)
-        btnLayout.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignBottom)
-        # btnLayout.addStretch(40)
-        return btnLayout
-
-    def addButton(self,
-                  func: Callable[[], None],
-                  mode_type: DlgMode,
-                  active: bool,
-                  tooltip: str
-                  ) -> QtWidgets.QPushButton:
-        match mode_type:
-            case DlgMode.Add:
-                filename = 'new.png'
-            case DlgMode.Sub:
-                filename = 'minus.png'
-            case DlgMode.Edit:
-                filename = 'edit.png'
-            case DlgMode.Del:
-                filename = 'del.png'
-            case _:
-                raise ValueError("Unknown button type")
-        btn = EditBtn(filename, active, tooltip)
-        self.btnLayout.addWidget(btn)
-        btn.clicked.connect(func)
-        self._buttons.append(btn)
-        return btn
-
-    def setActiveBtns(self, status: bool) -> None:
-        for btn in self._buttons:
-            btn.setActive(status)
-
 class EditBtn(QtWidgets.QPushButton):
     def __init__(self, filename: str, active: bool, tooltip: str = '') -> None:
         self.filename = filename
@@ -216,7 +151,7 @@ class Logger(QtWidgets.QTextEdit):
         super().__init__()
         self.init()
         #self.setMinimumHeight(147)
-        self.setMaximumHeight(120)
+        self.setMaximumHeight(140)
 
     def init(self) -> None:
         self.setReadOnly(True)
@@ -228,87 +163,9 @@ class Logger(QtWidgets.QTextEdit):
             msg += f'<br>{log[1][0:5]} <span style="text-decoration: underline">{log[1][6:]}</span> {log[0]}'
         self.insertHtml(msg[4:])
         self.ensureCursorVisible()
+        self.moveCursor(QtGui.QTextCursor.MoveOperation.Start)
 
     def addMessage(self, msg: str, date: str) -> None:
         self.insertHtml(f'{date[0:5]}<span style="text-decoration: underline">{date[7:]}</span>{msg}<br>')
         self.ensureCursorVisible()
-
-class DialogGrid:
-    def __init__(self) -> None:
-        self.lblWarning = None
-        self.__grid = QtWidgets.QGridLayout()
-        self.initSettings()
-        self.initWarning()
-
-    def initSettings(self) -> None:
-        self.__grid.setContentsMargins(40, 40, 40, 40)
-        self.__grid.setSpacing(30)
-
-    def initWarning(self) -> None:
-        self.lblWarning = QtWidgets.QLabel('')
-        self.lblWarning.setObjectName('orange')
-        self.__addWidget(self.lblWarning)
-        self.lblWarning.hide()
-
-    def setMsg(self, txt: str) -> None:
-        self.lblWarning.setText(txt)
-        self.lblWarning.show()
-
-    def addEditBox(self, txt: str) -> EditComboBox:
-        lbl = QtWidgets.QLabel(txt)
-        box = EditComboBox()
-        self.__addWidgets(lbl, box)
-        return box
-
-    def addLineEdit(self, txt, val = '', readonly : bool=False, changedFunc = None) -> LineEdit:
-        lbl = QtWidgets.QLabel(txt)
-        edit = LineEdit(val, readonly, changedFunc)
-        self.__addWidgets(lbl, edit)
-        return edit
-
-    def addSpinBox(self, txt: str, changedFunc=None) -> IntSpinBox:
-        lbl = QtWidgets.QLabel(txt)
-        spin = IntSpinBox(changedFunc = changedFunc)
-        self.__addWidgets(lbl, spin)
-        return spin
-
-    def addFloatBox(self, txt: str, changedFunc=None) -> FloatSpinBox:
-        lbl = QtWidgets.QLabel(txt)
-        spin = FloatSpinBox(changedFunc = changedFunc)
-        self.__addWidgets(lbl, spin)
-        return spin
-
-    def addNote(self, txt: str) -> Note:
-        lbl = QtWidgets.QLabel(txt)
-        note = Note()
-        self.__addWidgets(lbl, note)
-        return note
-
-    def addComboBox(self, txt: str) -> QtWidgets.QComboBox:
-        lbl = QtWidgets.QLabel(txt)
-        comboBox = QtWidgets.QComboBox()
-        comboBox.addItem('Форма 1', 1)
-        comboBox.addItem('Форма 2', 2)
-        comboBox.addItem('Форма 3', 3)
-        self.__addWidgets(lbl, comboBox)
-        return comboBox
-
-    def addButtonBox(self,
-                     doubleBtnMode: bool,
-                     acceptedFunc: Callable[[], None],
-                     rejectedFunc: Callable[[], None]
-                     ) -> ButtonBox:
-        bbox = ButtonBox(doubleBtnMode, acceptedFunc, rejectedFunc)
-        self.__addWidget(bbox)
-        self.__grid.setAlignment(bbox, Qt.AlignmentFlag.AlignCenter)
-        return bbox
-
-    def __addWidget(self, wgt) -> None:
-        self.__grid.addWidget(wgt, self.__grid.rowCount(), 0, 1, 4)
-
-    def __addWidgets(self, lblWgt, editWgt) -> None:
-        self.__grid.addWidget(lblWgt, self.__grid.rowCount(), 0, 1, 1)
-        self.__grid.addWidget(editWgt, self.__grid.rowCount() - 1, 1, 1, 3)
-
-    def getGrid(self) -> QtWidgets.QGridLayout:
-        return self.__grid
+        self.moveCursor(QtGui.QTextCursor.MoveOperation.Start)

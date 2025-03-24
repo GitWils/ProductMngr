@@ -4,15 +4,14 @@ from PyQt6 import QtWidgets
 from PyQt6.QtCore import Qt, QEvent
 from PyQt6.QtGui import QIcon, QAction
 
-from Views.CustomWidgets import SplashScreen
+from Views.Widgets.CustomWidgets import SplashScreen
 from Project import Project
 import sys
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Облік продукту")
-        # self.setFixedSize(1004, 750)
+        self.setWindowTitle("Облік продукту ")
         self.setMinimumSize(1004, 750)
         self.centerWindow()
         self._initUI()

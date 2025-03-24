@@ -1,5 +1,5 @@
-from PyQt6 import QtGui, QtCore
-import Views.CustomWidgets as CustomWidgets
+from PyQt6 import QtGui, QtCore, QtWidgets
+import Views.Widgets.CustomWidgets as CustomWidgets
 from Models.Action import Action
 from datetime import datetime
 from pprint import pprint
@@ -30,7 +30,8 @@ class ActionTable(CustomWidgets.Table):
 		self.setColumnWidth(3, 256)
 		self.setColumnHidden(4, True)
 		self.setMinimumWidth(500)
-		# header = self.horizontalHeader()
+		header = self.horizontalHeader()
+		header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeMode.Stretch)
 		# header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
 
 	def getSelectedRowId(self):

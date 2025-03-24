@@ -62,17 +62,17 @@ class ProductMngr:
 		self._db.newAction(productId, weight, note)
 		if weight > 0:
 			msg = f'отримано <span style="text-decoration: underline">{product}</span> '\
-				f'вагою <span style="text-decoration: underline">{weight}</span>, кг'
+				f'вагою <span style="text-decoration: underline">{weight:.2f}</span>, кг'
 		else:
 			msg = f'передано в роботу <span style="text-decoration: underline">{product}</span> ' \
-			      f'вагою <span style="text-decoration: underline">{-weight}</span>, кг'
+			      f'вагою <span style="text-decoration: underline">{-weight:.2f}</span>, кг'
 		self._db.newLogMsg(msg)
 		self.reloadAll()
 
 	def delAction(self, action: Action) -> None:
 		self._db.delActionById(action.getId(), action.getProductId())
-		msg = f'видалено дію <span style="text-decoration: underline">{action.getName()}</span> '\
-				f'вагою <span style="text-decoration: underline">{action.getWeight()}</span>, '
+		msg = f'видалено переміщення <span style="text-decoration: underline">{action.getName()}</span> '\
+				f'вагою <span style="text-decoration: underline">{abs(action.getWeight()):.2f}</span>, кг'
 		self._db.newLogMsg(msg)
 		self.reloadAll()
 
@@ -86,6 +86,9 @@ class ProductMngr:
 			self._db.updateProduct(product, original_action.getProductId())
 		if weight != original_action.getWeight() or note != original_action.getNote():
 			self._db.updateAction(original_action.getId(), original_action.getProductId(), weight, note)
+		msg = f'відредаговано переміщення <span style="text-decoration: underline">{original_action.getName()}</span> '# \
+		      #f'вагою <span style="text-decoration: underline">{abs(action.getWeight()):.2f}</span>, кг'
+		self._db.newLogMsg(msg)
 		self.reloadAll()
 
 	def setFilterID(self, product_id: int) -> None:
