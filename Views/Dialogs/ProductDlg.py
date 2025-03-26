@@ -1,6 +1,5 @@
 from PyQt6.QtWidgets import QDialog
 from PyQt6.QtCore import Qt
-import Views.Widgets.CustomWidgets as CustomWidgets
 from Views.Widgets.DialogGrid import DialogGrid
 from pprint import pprint
 from abc import ABC, abstractmethod
@@ -9,7 +8,7 @@ class ProductDlg(QDialog):
 	def __init__(self, products: []) -> None:
 		super().__init__()
 		self.setWindowModality(Qt.WindowModality.ApplicationModal)
-		self.setFixedWidth(700)
+		self.setFixedWidth(600)
 		self.setMinimumHeight(400)
 		self._products = products
 		# self.setWindowFlags(self.windowFlags() & ~Qt.WindowType.WindowMaximizeButtonHint)

@@ -1,7 +1,10 @@
 from PyQt6 import QtWidgets
 from PyQt6.QtCore import Qt, QPoint
+from PyQt6.QtPrintSupport import QPrintDialog, QPrinter
+from PyQt6.QtGui import QTextDocument
 
 import Views.Dialogs.ProductDlg as Dialogs
+from Views.Dialogs.PrintDlg import PrintDlg
 import Views.ProductView as ProductView
 import Views.ActionView as ActionView
 import Views.Widgets.CustomWidgets as CustomWidgets
@@ -29,10 +32,47 @@ class Project(QtWidgets.QWidget):
         centralLayout = QtWidgets.QVBoxLayout()
         self.setLayout(centralLayout)
         lblLog = QtWidgets.QLabel("Журнал подій:")
+        # lblLog.clicked.connect(self.pringLogs)
         centralLayout.addWidget(self._initTabs())
         centralLayout.addWidget(lblLog)
         centralLayout.addWidget(self._logArea, Qt.AlignmentFlag.AlignBottom)
         self._logArea.showContent(self._productMngr.getLogs())
+
+    def printLogs(self):
+        printer = QPrinter()
+        print_dialog = QPrintDialog(printer, self)
+        if print_dialog.exec() == QPrintDialog.DialogCode.Accepted:
+            document = QTextDocument()
+            document.setPlainText("self.text_edit.toPlainText()")
+            document.print(printer)
+        print("here")
+
+    def printAction(self):
+        dialog = PrintDlg()
+        dialog.move(self._getInitPos(dialog.width()))
+        result = dialog.exec()
+        if result:
+            printer = QPrinter()
+            print_dialog = QPrintDialog(printer, self)
+            print_dialog.setWindowTitle("Прінтер")
+            # print_dialog.set
+            if print_dialog.exec() == QPrintDialog.DialogCode.Accepted:
+                document = QTextDocument()
+                document.setPlainText(self._logArea.toPlainText())
+                document.print(printer)
+
+    def printTextAuto(self, text):
+        # Створення принтера
+        printer = QPrinter()
+        # Налаштування принтера
+        printer.setOutputFormat(QPrinter.OutputFormat.NativeFormat)
+        # printer.setPageSize(QPrinter..A4)
+        # printer.setPageSize()
+        # Створення документу
+        document = QTextDocument()
+        document.setPlainText(text)
+        # Друк документу
+        document.print(printer)
 
     def _initTabs(self):
         tabs = QtWidgets.QTabWidget()
@@ -61,17 +101,19 @@ class Project(QtWidgets.QWidget):
         self.reloadTables()
         self.deactivateBtns()
 
-    def _getInitPos(self) -> QPoint:
+    def _getInitPos(self, width: int=0) -> QPoint:
         """ calculation the starting position point of dialog"""
         dlgPos = self.mapToGlobal(self.pos())
-        dlgPos.setX(dlgPos.x() + 170)
+        # dlgPos.setX(dlgPos.x() + 10)
+        dlgPos.setX(dlgPos.x() - width//2 + 502)
         dlgPos.setY(dlgPos.y() + 80)
+        print(width)
         return dlgPos
 
     def addActionBtn(self):
         """ if the add action button was clicked """
         dialog = Dialogs.AddProductDlg(self._productMngr.getProducts())
-        dialog.move(self._getInitPos())
+        dialog.move(self._getInitPos(dialog.width()))
         result = dialog.exec()
         if result:
             self._productMngr.addAction(dialog.getProduct(), dialog.getWeight(), dialog.getNote())
@@ -81,7 +123,7 @@ class Project(QtWidgets.QWidget):
     def subtractActionBtn(self):
         """ if subtract action button was clicked """
         dialog = Dialogs.SubtractProductDlg(self._productMngr.getProducts())
-        dialog.move(self._getInitPos())
+        dialog.move(self._getInitPos(dialog.width()))
         result = dialog.exec()
         if result:
             self._productMngr.addAction(dialog.getProduct(), -dialog.getWeight(), dialog.getNote())
@@ -93,7 +135,7 @@ class Project(QtWidgets.QWidget):
         if self._actionTable.getSelectedRowId():
             currentAction = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
             dialog = Dialogs.EditProductDlg(self._productMngr.getProducts(), self._productMngr.getActionById(self._actionTable.getSelectedRowId()))
-            dialog.move(self._getInitPos())
+            dialog.move(self._getInitPos(dialog.width()))
             result = dialog.exec()
             if result:
                 self._productMngr.editAction(currentAction,
@@ -109,7 +151,7 @@ class Project(QtWidgets.QWidget):
         if self._actionTable.getSelectedRowId():
             currentAction = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
             dialog = Dialogs.DelProductDlg(self._productMngr.getProducts(), currentAction)
-            dialog.move(self._getInitPos())
+            dialog.move(self._getInitPos(dialog.width()))
             result = dialog.exec()
             if result:
                 self._productMngr.delAction(currentAction)

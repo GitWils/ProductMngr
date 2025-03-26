@@ -9,6 +9,10 @@ QWidget {
 /********************************* Main UI settings ***************************************/
 
 /********************************* Buttons UI QPushButton settings ***************************************/
+QPushButton {
+    color: "#F0F5F9";
+}
+
 #dlgBtn, QMessageBox QPushButton {
     font-size: 16px;
     color: "#F0F5F9";
@@ -88,9 +92,14 @@ QCheckBox::indicator:checked {
 
 /********************************* QDateTimeEdit UI settings ***************************************/
 QDateTimeEdit {
-    color: #F0F5F9;
+    color: #1E2022;
     border: 1px solid #424446;
     font-size: 16px;
+    background-color: #F0F5F9;
+    font-size: 16px;
+    border-radius: 2px;
+    height: 26px;
+    width: 260px;
 }
 
 QDateTimeEdit:disabled {
@@ -232,7 +241,7 @@ QComboBox {
     /*padding: 0px 0px 0px 0px;*/
 }
 
-QComboBox::drop-down {
+QComboBox::drop-down, QDateTimeEdit::drop-down {
     background-color: #52616B;
     subcontrol-origin: padding;
     subcontrol-position: center right;
@@ -241,7 +250,7 @@ QComboBox::drop-down {
     /*using palettes: #1E2022, #52616B, #C9D6DF, #F0F5F9, orange - #e95420*/
 }
 
-QComboBox::down-arrow {
+QComboBox::down-arrow, QDateTimeEdit::down-arrow {
     image: url(img/actdown.png);
     width: 10px;
     height: 10px;

@@ -20,8 +20,8 @@ class MainWindow(QtWidgets.QMainWindow):
         """ user interface initializing"""
         ico = QIcon("img/logo.png")
         self.setWindowIcon(ico)
-        self.setMenuBar(self._createMenuBar())
         self.pr = Project()
+        self.setMenuBar(self._createMenuBar())
         self.setCentralWidget(self.pr)
 
     def _createMenuBar(self):
@@ -30,7 +30,9 @@ class MainWindow(QtWidgets.QMainWindow):
         excellAct = QAction("&Експорт в Excel", self)
         #excellAct.triggered.connect(self.pr.openSaveDlg)
         file_menu.addAction(excellAct)
-        file_menu.addAction(QAction("&Друк", self))
+        print_action = QAction("&Друкувати журнал", self)
+        print_action.triggered.connect(self.pr.printAction)
+        file_menu.addAction(print_action)
         view_menu = QtWidgets.QMenu("&Вигляд", self)
         view_menu.addAction(QAction("&Налаштування", self))
         menuBar.addMenu(file_menu)
