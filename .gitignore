@@ -5,3 +5,4 @@ data.s
 build/
 dist/
 main.spec
+print.pdf
