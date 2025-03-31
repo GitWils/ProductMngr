@@ -11,6 +11,7 @@ QWidget {
 /********************************* Buttons UI QPushButton settings ***************************************/
 QPushButton {
     color: "#F0F5F9";
+    font-size: 16px;
 }
 
 #dlgBtn, QMessageBox QPushButton {
@@ -45,7 +46,7 @@ QToolTip {
 }
 /********************************* Buttons UI settings ***************************************/
 
-QLabel {
+QLabel, QFrame, QGroupBox, QRadioButton, QHeaderView {
     color: #F0F5F9;
     font-size: 16px;
 }
@@ -58,6 +59,10 @@ QLabel#orange {
     color: #e95420;
     text-align: center;
     qproperty-alignment: AlignCenter;
+}
+
+QGroupB {
+    color: green;
 }
 
 /********************************* TextEdit UI settings ***************************************/

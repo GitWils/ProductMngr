@@ -36,11 +36,11 @@ class ProductTable(CustomWidgets.Table):
 		return self.model().data(NewIndex)
 
 class TableModel(QtGui.QStandardItemModel):
-	def __init__(self, data: [Action]):
+	def __init__(self, data: [Action]) -> None:
 		super(TableModel, self).__init__()
 		self._data = data
 
-	def data(self, index, role=QtCore.Qt.ItemDataRole.DisplayRole):
+	def data(self, index, role=QtCore.Qt.ItemDataRole.DisplayRole) :
 		if not index.isValid():
 			return None
 		if role == QtCore.Qt.ItemDataRole.TextAlignmentRole: # and index.column() != 1
@@ -55,11 +55,11 @@ class TableModel(QtGui.QStandardItemModel):
 					return self._data[index.row()]['id']
 		return None
 
-	def reloadData(self, data):
+	def reloadData(self, data) -> None:
 		self._data = data
 
 class CustomSortFilterProxyModel(QtCore.QSortFilterProxyModel):
-	def lessThan(self, left_index, right_index):
+	def lessThan(self, left_index, right_index) -> bool:
 		left_data = self.sourceModel().data(left_index, QtCore.Qt.ItemDataRole.DisplayRole)
 		right_data = self.sourceModel().data(right_index, QtCore.Qt.ItemDataRole.DisplayRole)
 		if left_data is None and right_data is None:

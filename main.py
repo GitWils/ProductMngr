@@ -1,10 +1,11 @@
 #! /usr/bin/python3
 
 from PyQt6 import QtWidgets 
-from PyQt6.QtCore import Qt, QEvent
+from PyQt6.QtCore import Qt, QEvent, QTranslator
 from PyQt6.QtGui import QIcon, QAction
 
 from Views.Widgets.CustomWidgets import SplashScreen
+from Views.Widgets.Translator import UkrainianTranslator
 from Project import Project
 import sys
 
@@ -61,6 +62,8 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     with open("style.css", "r") as file:
         app.setStyleSheet(file.read())
+    translator = UkrainianTranslator()
+    app.installTranslator(translator)
     # Створюємо і показуємо заставку
     splash = SplashScreen()
     splash.show()
