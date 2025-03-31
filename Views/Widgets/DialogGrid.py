@@ -8,7 +8,7 @@ class PeriodBox:
     def __init__(self, begin: str, to: str) -> None:
         self._beginLbl = QtWidgets.QLabel(begin)
         self._beginLbl.setContentsMargins(50, 0, 0, 0)
-        self._toLbl = QtWidgets.QLabel(to)
+        self._endLbl = QtWidgets.QLabel(to)
         self._beginDate = QtWidgets.QDateTimeEdit()
         self._beginDate.setCalendarPopup(True)
         self._toDate = QtWidgets.QDateTimeEdit()
@@ -19,13 +19,13 @@ class PeriodBox:
     def getBeginLbl(self):
         return self._beginLbl
 
-    def getToLbl(self):
-        return self._toLbl
+    def getEndLbl(self):
+        return self._endLbl
 
     def getBeginDate(self):
         return self._beginDate
 
-    def getToDate(self):
+    def getEndDate(self):
         return self._toDate
 
 class DialogGrid:
@@ -90,7 +90,7 @@ class DialogGrid:
     def addPeriodBox(self, begin: str, to: str) -> PeriodBox:
         periodBox = PeriodBox(begin, to)
         self.__addQuadrupleWidgets(periodBox.getBeginLbl(), periodBox.getBeginDate(),
-                                   periodBox.getToLbl(),    periodBox.getToDate())
+                                   periodBox.getEndLbl(),    periodBox.getEndDate())
         return periodBox
 
     def addNote(self, txt: str) -> Note:

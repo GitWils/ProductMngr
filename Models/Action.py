@@ -1,14 +1,43 @@
 from datetime import datetime
 
 class Filter:
-	def __init__(self, product_id=0) -> None:
+	def __init__(self, product_id=0, limit: int=50, begin_date: str=None, end_date: str=None) -> None:
 		self._productId = product_id
+		self._beginDate = begin_date
+		self._endDate = end_date
+		self._limit = limit
+
+	def __str__(self) -> str:
+		return f"{self._productId} від {self._beginDate} до {self._endDate}, ліміт - {self._limit}"
 
 	def setProductId(self, product_id: int) -> None:
 		self._productId = product_id
 
 	def getProductId(self) -> int:
 		return self._productId
+
+	def setBeginDate(self, begin_date: str):
+		self._beginDate = begin_date
+
+	def getBeginDate(self):
+		return self._beginDate
+
+	def setEndDate(self, to_date: str):
+		self._endDate = to_date
+
+	def getEndDate(self):
+		return self._endDate
+
+	def setLimit(self, limit: int):
+		self._limit = limit
+
+	def getLimit(self):
+		return self._limit
+
+	def clear(self):
+		self._beginDate = None
+		self._endDate = None
+		self._limit = 50
 
 class Action:
 	def __init__(self, name: str, name_id: int, action_id: int, weight: float, note: str, date: datetime) -> None:
