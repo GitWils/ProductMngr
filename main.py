@@ -31,7 +31,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #excellAct.triggered.connect(self.pr.openSaveDlg)
         file_menu.addAction(excellAct)
         print_action = QAction("&Друкувати журнал", self)
-        print_action.triggered.connect(self.pr.printAction)
+        print_action.triggered.connect(self.pr.printActions)
         file_menu.addAction(print_action)
         view_menu = QtWidgets.QMenu("&Вигляд", self)
         view_menu.addAction(QAction("&Налаштування", self))

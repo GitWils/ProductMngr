@@ -19,6 +19,15 @@ class PrintDlg(QDialog):
 		self._dlgGrid.setMsg("Виберіть період")
 		self.setLayout(self._dlgGrid.getGrid())
 
+	def getBeginDateStr(self) -> str:
+		return  self._periodBox.getBeginDate().dateTime().toString('yyyy-MM-dd hh:mm:ss')
+
+	def getEndDateStr(self) -> str:
+		return self._periodBox.getEndDate().dateTime().toString('yyyy-MM-dd hh:mm:ss')
+
+	def getLimit(self) -> int:
+		return self._countWgt.value()
+
 	def accept(self) -> None:
 		# if len(self.getProduct()) == 0:
 		# 	self.setMsg('Введіть назву продукту!')

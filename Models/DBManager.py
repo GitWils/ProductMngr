@@ -161,9 +161,16 @@ class DBManager:
         self.query.exec("delete from products where counter < 1")
         self.query.clear()
 
-    def getLogs(self) -> []:
+    def getLogs(self, fltr: Filter) -> []:
         """ returns array of logs """
-        self.query.exec("select * from logs order by id desc limit 30")
+        if fltr.getBeginDate():
+            self.query.prepare('select * from logs where dt > :begin and dt < :end order by id desc limit :limit')
+            self.query.bindValue(":begin", fltr.getBeginDate())
+            self.query.bindValue(":end", fltr.getEndDate())
+        else:
+            self.query.prepare('select * from logs order by id desc limit :limit')
+        self.query.bindValue(':limit', fltr.getLimit())
+        self.query.exec()
         lst = []
         if self.query.isActive():
             self.query.first()
@@ -183,6 +190,24 @@ class DBManager:
         self.query.bindValue(':dt', date['datetime'])
         self.query.exec()
         self.query.clear()
+
+    def getWhereFromFilter(self, fltr: Filter, prefix: str) -> str:
+        where = ''
+        # if filter.get('contracts'):
+        #     where = ' and ('
+        #     for id in filter['contracts']:
+        #         where += f' {prefix}.contract_id = {id} or '
+        #     where = where[:-4] + ')'
+        # if filter.get('from'):
+        #     where += f' and({prefix}.dt > "{filter['from']}") '
+        # if filter.get('to'):
+        #     where += f' and({prefix}.dt < "{filter['to']}")'
+        # if where == '': #if need to find nothing
+        #     where = f' and ({prefix}.contract_id = 0)'
+        if fltr.getBeginDate():
+            where += f" where {prefix}.dt > '{fltr.getBeginDate()}'"
+            where += f" and {prefix}.dt < '{fltr.getEndDate()}' "
+        return where
 
     @staticmethod
     def getDateTime() -> {}:

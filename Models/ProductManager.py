@@ -1,6 +1,8 @@
 from Models.DBManager import DBManager
 from Models.Action import Action, Filter
 from pprint import pprint
+import html
+import re
 
 class ProductMngr:
 	def __init__(self) -> None:
@@ -37,8 +39,14 @@ class ProductMngr:
 	def getActionById(self, action_id: int) -> Action:
 		return self._actions[action_id]
 
-	def getLogs(self) -> str:
-		return self._db.getLogs()
+	def getLogs(self) -> []:
+		return self._db.getLogs(self._filter)
+
+	def getLogsStr(self) -> str:
+		list = self._db.getLogs(self._filter)
+		result = '\n'.join([f"{index + 1}. {item[1]} - {item[0]}" for index, item in enumerate(reversed(list))])
+		result = re.sub('<.*?>', '', result)
+		return  result
 
 	def addProduct(self, name: str) -> int:
 		productId = self._db.newProduct(name)
@@ -94,3 +102,13 @@ class ProductMngr:
 	def setFilterID(self, product_id: int) -> None:
 		self._filter.setProductId(product_id)
 		self.reloadActions()
+
+	def setFilterPeriod(self, begin: str, end: str) -> None:
+		self._filter.setBeginDate(begin)
+		self._filter.setEndDate(end)
+
+	def setFilterLimit(self, limit: int) -> None:
+		self._filter.setLimit(limit)
+
+	def filterClear(self) -> None:
+		self._filter.clear()

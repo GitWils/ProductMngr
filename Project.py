@@ -9,6 +9,7 @@ import Views.ProductView as ProductView
 import Views.ActionView as ActionView
 import Views.Widgets.CustomWidgets as CustomWidgets
 from Views.Widgets.ProductsTable import ProductsTable
+from Views.Widgets.Logger import Logger
 from Models.ProductManager import ProductMngr
 from Decorators import Timing
 
@@ -24,7 +25,7 @@ class Project(QtWidgets.QWidget):
         self._employeesTable = None
         self._editBtn = None
         self._delBtn = None
-        self._logArea = CustomWidgets.Logger()
+        self._logArea = Logger()
 
         self.initMenu()
 
@@ -38,16 +39,7 @@ class Project(QtWidgets.QWidget):
         centralLayout.addWidget(self._logArea, Qt.AlignmentFlag.AlignBottom)
         self._logArea.showContent(self._productMngr.getLogs())
 
-    def printLogs(self):
-        printer = QPrinter()
-        print_dialog = QPrintDialog(printer, self)
-        if print_dialog.exec() == QPrintDialog.DialogCode.Accepted:
-            document = QTextDocument()
-            document.setPlainText("self.text_edit.toPlainText()")
-            document.print(printer)
-        print("here")
-
-    def printAction(self):
+    def printActions(self):
         dialog = PrintDlg()
         dialog.move(self._getInitPos(dialog.width()))
         result = dialog.exec()
@@ -55,24 +47,13 @@ class Project(QtWidgets.QWidget):
             printer = QPrinter()
             print_dialog = QPrintDialog(printer, self)
             print_dialog.setWindowTitle("Прінтер")
-            # print_dialog.set
             if print_dialog.exec() == QPrintDialog.DialogCode.Accepted:
                 document = QTextDocument()
-                document.setPlainText(self._logArea.toPlainText())
+                self._productMngr.setFilterPeriod(dialog.getBeginDateStr(), dialog.getEndDateStr())
+                self._productMngr.setFilterLimit(dialog.getLimit())
+                document.setPlainText(self._productMngr.getLogsStr())
                 document.print(printer)
-
-    def printTextAuto(self, text):
-        # Створення принтера
-        printer = QPrinter()
-        # Налаштування принтера
-        printer.setOutputFormat(QPrinter.OutputFormat.NativeFormat)
-        # printer.setPageSize(QPrinter..A4)
-        # printer.setPageSize()
-        # Створення документу
-        document = QTextDocument()
-        document.setPlainText(text)
-        # Друк документу
-        document.print(printer)
+                self._productMngr.filterClear()
 
     def _initTabs(self):
         tabs = QtWidgets.QTabWidget()
