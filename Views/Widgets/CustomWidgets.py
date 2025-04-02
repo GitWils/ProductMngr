@@ -81,6 +81,7 @@ class ButtonBox(QtWidgets.QDialogButtonBox):
             self.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setObjectName('dlgBtn')
         self.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setText('Зберегти')
+        self.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDefault(True)
         if acceptedFunc: self.accepted.connect(acceptedFunc)
         if rejectedFunc: self.rejected.connect(rejectedFunc)
         if sys.platform == 'win32' or sys.platform == 'win64':

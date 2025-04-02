@@ -22,7 +22,6 @@ class Project(QtWidgets.QWidget):
         self._productMngr = ProductMngr()
         self._actionTable = None
         self._productTable = None
-        self._employeesTable = None
         self._editBtn = None
         self._delBtn = None
         self._logArea = Logger()
@@ -85,10 +84,8 @@ class Project(QtWidgets.QWidget):
     def _getInitPos(self, width: int=0) -> QPoint:
         """ calculation the starting position point of dialog"""
         dlgPos = self.mapToGlobal(self.pos())
-        # dlgPos.setX(dlgPos.x() + 10)
-        dlgPos.setX(dlgPos.x() - width//2 + 502)
-        dlgPos.setY(dlgPos.y() + 80)
-        print(width)
+        dlgPos.setX(dlgPos.x() - width//2 + self.width()//2)
+        dlgPos.setY(dlgPos.y() + self.height()//2 - 250)
         return dlgPos
 
     def addActionBtn(self):

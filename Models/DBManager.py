@@ -37,7 +37,8 @@ class DBManager:
                             str_date text, dt datetime default current_timestamp)""")
             self.query.clear()
         if 'logs' not in self.con.tables():
-            self.query.exec("""create table logs (id integer primary key autoincrement, 
+            self.query.exec("""create table logs (id integer primary key autoincrement,
+                            product_id integer secondary key, 
                             message text, 
                             str_date text, 
                             dt datetime default current_timestamp, 
@@ -115,6 +116,8 @@ class DBManager:
         return lst
 
     def getActions(self, fltr: Filter) -> dict[int, Action]:
+        self.query.prepare("""update actions set blocked = 1 where datetime(dt) <= datetime('now', '-24 hours')""")
+        self.query.exec()
         self.query.prepare(
             """select * from actions left join products on (products.id=actions.product_id) 
             where actions.product_id=:product_id order by id""")
@@ -130,6 +133,7 @@ class DBManager:
                                             action_id = self.query.value('actions.id'),
                 							weight =    self.query.value('weight'),
                                             note =      self.query.value('actions.note'),
+                                            blocked=    self.query.value('actions.blocked'),
                                             date=       self.query.value('str_date')
                                 )
                             })
@@ -181,10 +185,11 @@ class DBManager:
         self.query.clear()
         return lst
 
-    def newLogMsg(self, msg: str):
+    def newLogMsg(self, product_id: int, msg: str):
         """ new log massage creating """
         date = self.getDateTime()
-        self.query.prepare("insert into logs values(null, :message, :str_date, :dt, True)")
+        self.query.prepare("insert into logs values(null, :product_id, :message, :str_date, :dt, True)")
+        self.query.bindValue(':product_id', product_id)
         self.query.bindValue(':message', msg)
         self.query.bindValue(':str_date', date['s_date'])
         self.query.bindValue(':dt', date['datetime'])
