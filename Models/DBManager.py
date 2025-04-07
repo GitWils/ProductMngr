@@ -84,7 +84,7 @@ class DBManager:
         date = self.getDateTime()
         self.query.prepare("""update actions set  
             product_id = :product_id, weight = :weight, note = :note, str_date = :str_date, dt = :dt
-            where id = :id""")
+            where id = :id and blocked = False""")
         self.query.bindValue(':product_id', product_id)
         self.query.bindValue(':weight', weight)
         self.query.bindValue(':note', note)
@@ -180,7 +180,7 @@ class DBManager:
             self.query.first()
             while self.query.isValid():
                 arr = [self.query.value('message'), self.query.value('str_date')]
-                lst.append(arr)
+                lst.insert(0, arr)
                 self.query.next()
         self.query.clear()
         return lst

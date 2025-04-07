@@ -1,5 +1,5 @@
 from typing import Callable
-from PyQt6 import QtGui, QtWidgets
+from PyQt6 import QtWidgets
 from PyQt6.QtCore import Qt
 
 from Views.Widgets.CustomWidgets import DlgMode, EditBtn

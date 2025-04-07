@@ -2,6 +2,7 @@ from PyQt6 import QtWidgets
 from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtPrintSupport import QPrintDialog, QPrinter
 from PyQt6.QtGui import QTextDocument
+from PyQt6.QtWidgets import QTabWidget
 
 import Views.Dialogs.ProductDlg as Dialogs
 from Views.Dialogs.PrintDlg import PrintDlg
@@ -17,8 +18,9 @@ from pprint import pprint
 
 class Project(QtWidgets.QWidget):
     """ widget fills main window"""
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
+
         self._productMngr = ProductMngr()
         self._actionTable = None
         self._productTable = None
@@ -28,7 +30,7 @@ class Project(QtWidgets.QWidget):
 
         self.initMenu()
 
-    def initMenu(self):
+    def initMenu(self) -> None:
         centralLayout = QtWidgets.QVBoxLayout()
         self.setLayout(centralLayout)
         lblLog = QtWidgets.QLabel("Журнал подій:")
@@ -38,7 +40,7 @@ class Project(QtWidgets.QWidget):
         centralLayout.addWidget(self._logArea, Qt.AlignmentFlag.AlignBottom)
         self._logArea.showContent(self._productMngr.getLogs())
 
-    def printActions(self):
+    def printActions(self) -> None:
         dialog = PrintDlg()
         dialog.move(self._getInitPos(dialog.width()))
         result = dialog.exec()
@@ -54,7 +56,7 @@ class Project(QtWidgets.QWidget):
                 document.print(printer)
                 self._productMngr.filterClear()
 
-    def _initTabs(self):
+    def _initTabs(self) -> QTabWidget:
         tabs = QtWidgets.QTabWidget()
         tabs.addTab(self.createProductsTab(), "Продукти")
         tabs.addTab(QtWidgets.QLabel("Тут могла бути ваша реклама"), "Звіт")
@@ -62,7 +64,7 @@ class Project(QtWidgets.QWidget):
         return tabs
 
     @Timing
-    def createProductsTab(self):
+    def createProductsTab(self) -> None:
         """ products tab contents creation """
         self._productTable = ProductView.ProductTable(self._productMngr.getProducts())
         self._actionTable = ActionView.ActionTable(self._productMngr.getActionsList())
@@ -72,14 +74,18 @@ class Project(QtWidgets.QWidget):
         self._editBtn = tab.addButton(self.editActionBtn, CustomWidgets.DlgMode.Edit, False, 'Редагувати переміщення')
         self._delBtn = tab.addButton(self.delActionBtn, CustomWidgets.DlgMode.Del, False, 'Видалити переміщення')
         self._productTable.clicked.connect(self.showActions)
+        self._actionTable.clicked.connect(self.setEditBtnsStatus)
         self._actionTable.doubleClicked.connect(self.editActionBtn)
         return tab
 
-    def showActions(self):
+    def showActions(self) -> None:
         """ showing table with product actions """
         self._productMngr.setFilterID(self._productTable.getSelectedRowId())
         self.reloadTables()
-        self.deactivateBtns()
+        self.activateBtns(False)
+
+    def setEditBtnsStatus(self) -> None:
+        self.activateBtns(not self._actionTable.isBlockedRow(self._actionTable.getSelectedRowId()))
 
     def _getInitPos(self, width: int=0) -> QPoint:
         """ calculation the starting position point of dialog"""
@@ -88,7 +94,7 @@ class Project(QtWidgets.QWidget):
         dlgPos.setY(dlgPos.y() + self.height()//2 - 250)
         return dlgPos
 
-    def addActionBtn(self):
+    def addActionBtn(self) -> None:
         """ if the add action button was clicked """
         dialog = Dialogs.AddProductDlg(self._productMngr.getProducts())
         dialog.move(self._getInitPos(dialog.width()))
@@ -98,7 +104,7 @@ class Project(QtWidgets.QWidget):
             self._logArea.showContent(self._productMngr.getLogs())
             self.reloadTables()
 
-    def subtractActionBtn(self):
+    def subtractActionBtn(self) -> None:
         """ if subtract action button was clicked """
         dialog = Dialogs.SubtractProductDlg(self._productMngr.getProducts())
         dialog.move(self._getInitPos(dialog.width()))
@@ -108,11 +114,12 @@ class Project(QtWidgets.QWidget):
             self._logArea.showContent(self._productMngr.getLogs())
             self.reloadTables()
 
-    def editActionBtn(self):
+    def editActionBtn(self) -> None:
         """ if edit action button was clicked """
-        if self._actionTable.getSelectedRowId():
+        selectedActionID = self._actionTable.getSelectedRowId()
+        if selectedActionID and not self._actionTable.isBlockedRow(selectedActionID):
             currentAction = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
-            dialog = Dialogs.EditProductDlg(self._productMngr.getProducts(), self._productMngr.getActionById(self._actionTable.getSelectedRowId()))
+            dialog = Dialogs.EditProductDlg(self._productMngr.getProducts(), self._productMngr.getActionById(selectedActionID))
             dialog.move(self._getInitPos(dialog.width()))
             result = dialog.exec()
             if result:
@@ -124,7 +131,7 @@ class Project(QtWidgets.QWidget):
                 self._logArea.showContent(self._productMngr.getLogs())
                 self.reloadTables()
 
-    def delActionBtn(self):
+    def delActionBtn(self) -> None:
         """ if delete action button was clicked """
         if self._actionTable.getSelectedRowId():
             currentAction = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
@@ -136,9 +143,9 @@ class Project(QtWidgets.QWidget):
                 self._logArea.showContent(self._productMngr.getLogs())
                 self.reloadTables()
 
-    def deactivateBtns(self) -> None:
-        self._editBtn.setActive(False)
-        self._delBtn.setActive(False)
+    def activateBtns(self, status: bool) -> None:
+        self._editBtn.setActive(status)
+        self._delBtn.setActive(status)
 
     def reloadTables(self) -> None:
         self._actionTable.loadData(self._productMngr.getActionsList())

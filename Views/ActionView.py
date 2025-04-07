@@ -3,6 +3,8 @@ import Views.Widgets.CustomWidgets as CustomWidgets
 from Models.Action import Action
 from datetime import datetime
 
+from pprint import pprint
+
 class ActionTable(CustomWidgets.Table):
 	def __init__(self, components: [Action] = None) -> None:
 		super().__init__()
@@ -33,10 +35,16 @@ class ActionTable(CustomWidgets.Table):
 		header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeMode.Stretch)
 		# header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
 
-	def getSelectedRowId(self):
+	def getSelectedRowId(self) -> int:
 		index = self.currentIndex()
 		NewIndex = self.model().index(index.row(), 4)
 		return self.model().data(NewIndex)
+
+	def isBlockedRow(self, component_id: int) -> bool:
+		for component in self._components:
+			if component.getId() == component_id:
+				return component.isBlocked()
+		return True
 
 class TableModel(QtGui.QStandardItemModel):
 	def __init__(self, data :[Action]):

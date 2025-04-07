@@ -58,7 +58,7 @@ class Action:
 		self._date =    date
 
 	def __str__(self) -> str:
-		return f"{self._name}:{self._name_id}, вага - {self._weight}кг примітка - \"{self._note}\" створено - {self._date}"
+		return f"{self._name}:{self._name_id}, вага - {self._weight}кг, примітка - \"{self._note}\", блокування - {self._blocked}, створено - {self._date} "
 
 	def getName(self) -> str:
 		return self._name
