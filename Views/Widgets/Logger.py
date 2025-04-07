@@ -17,9 +17,9 @@ class Logger(QtWidgets.QTextEdit):
             msg += f'<br>{log[1][0:5]} <span style="text-decoration: underline">{log[1][6:]}</span> {log[0]}'
         self.insertHtml(msg[4:])
         self.ensureCursorVisible()
-        self.moveCursor(QtGui.QTextCursor.MoveOperation.Start)
+        # self.moveCursor(QtGui.QTextCursor.MoveOperation.Start)
 
     def addMessage(self, msg: str, date: str) -> None:
         self.insertHtml(f'{date[0:5]}<span style="text-decoration: underline">{date[7:]}</span>{msg}<br>')
         self.ensureCursorVisible()
-        self.moveCursor(QtGui.QTextCursor.MoveOperation.Start)
+        self.moveCursor(QtGui.QTextCursor.MoveOperation.End)
