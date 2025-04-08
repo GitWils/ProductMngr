@@ -89,9 +89,9 @@ class SubtractProductDlg(ProductDlg):
 	def accept(self) -> None:
 		present = False
 		for item in self._products:
-			if self.getProduct() == item['name']:
+			if self.getProduct() == item.getName():
 				present = True
-			if self.getProduct() == item['name'] and self.getWeight() > item['sum']:
+			if self.getProduct() == item.getName() and self.getWeight() > item.getBalance():
 				self.setMsg('Не вистачає продукту, перевірте залишки!')
 				return
 		if not  present:
@@ -112,8 +112,8 @@ class EditProductDlg(ProductDlg):
 			return
 		elif self.getProduct() == self._action.getName():
 			for item in self._products:
-				if (self._action.getName() == item['name']
-					  and self._action.getWeight() - self.getSign() * self.getWeight() > item['sum']):
+				if (self._action.getName() == item.getName()
+					  and self._action.getWeight() - self.getSign() * self.getWeight() > item.getBalance()):
 					self.setMsg('Не вистачає продукту, перевірте залишки!')
 					return
 		super().accept()

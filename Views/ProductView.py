@@ -2,7 +2,7 @@ from tkinter import BooleanVar
 
 from PyQt6 import QtGui, QtCore
 import Views.Widgets.CustomWidgets as CustomWidgets
-from Models.Action import Action
+from ProjectTypes import *
 from pprint import pprint
 
 class ProductTable(CustomWidgets.Table):
@@ -48,11 +48,11 @@ class TableModel(QtGui.QStandardItemModel):
 		if role == QtCore.Qt.ItemDataRole.DisplayRole:
 			match index.column():
 				case 0:
-					return self._data[index.row()]['name']
+					return self._data[index.row()].getName()
 				case 1:
-					return f"{self._data[index.row()]['sum']:.2f}"
+					return f"{self._data[index.row()].getBalance():.2f}"
 				case 2:
-					return self._data[index.row()]['id']
+					return self._data[index.row()].getId()
 		return None
 
 	def reloadData(self, data):

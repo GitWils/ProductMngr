@@ -1,5 +1,5 @@
 from Models.DBManager import DBManager
-from Models.Action import Action, Filter
+from ProjectTypes import *
 from pprint import pprint
 import html
 import re
@@ -13,10 +13,11 @@ class ProductMngr:
 		self.reloadAll()
 		#temp debug shows
 		print("Products (ProductMngr.py __init__()):")
-		pprint(self._products)
-		print("Actions (ProductMngr.py __init__()):")
-		for key, item in self._actions.items():
-			print(f"   {item}")
+		for item in self._products:
+			print(f"{item}")
+		# print("Actions (ProductMngr.py __init__()):")
+		# for key, item in self._actions.items():
+		# 	print(f"   {item}")
 
 	def getProducts(self) -> []:
 		return self._products
@@ -44,7 +45,7 @@ class ProductMngr:
 
 	def getLogsStr(self) -> str:
 		list = self._db.getLogs(self._filter)
-		result = '\n'.join([f"{index + 1}. [{item[1]}] -> {item[0]} [баланс: {100}кг]" for index, item in enumerate(reversed(list))])
+		result = '\n'.join([f"{index + 1}. [{item[1]}] -> {item[0]}" for index, item in enumerate(list)])
 		result = re.sub('<.*?>', '', result)
 		return  result
 
@@ -56,8 +57,8 @@ class ProductMngr:
 	def getBalanceByProductId(self, product_id) -> float:
 		res = None
 		for product in self._products:
-			if product['id'] == product_id:
-				res = product['sum']
+			if product.getId() == product_id:
+				res = product.getBalance()
 		return res
 
 	def reloadAll(self) -> None:
@@ -82,7 +83,7 @@ class ProductMngr:
 		else:
 			msg = f'передано в роботу <span style="text-decoration: underline">{product}</span> ' \
 			      f'вагою <span style="text-decoration: underline">{-weight:.2f}</span> кг'
-		msg += f' -> залишок: <span style="text-decoration: underline">{balance}</span> кг'
+		msg += f' -> залишок: <span style="text-decoration: underline">{balance:.2f}</span> кг'
 		self._db.newLogMsg(productId, msg)
 		self.reloadAll()
 
@@ -91,7 +92,7 @@ class ProductMngr:
 		balance = self.getBalanceByProductId(action.getProductId()) - action.getWeight()
 		msg = f'видалено переміщення <span style="text-decoration: underline">{action.getName()}</span> '\
 				f'вагою <span style="text-decoration: underline">{abs(action.getWeight()):.2f}</span> кг '\
-				f'-> залишок: <span style="text-decoration: underline">{balance}</span> кг'
+				f'-> залишок: <span style="text-decoration: underline">{balance:.2f}</span> кг'
 		self._db.newLogMsg(action.getProductId(), msg)
 		self.reloadAll()
 
@@ -107,7 +108,7 @@ class ProductMngr:
 			self._db.updateAction(original_action.getId(), original_action.getProductId(), weight, note)
 		balance = self.getBalanceByProductId(original_action.getProductId()) + (weight - original_action.getWeight())
 		msg = f'відредаговано переміщення <span style="text-decoration: underline">{original_action.getName()}</span> '\
-				f'-> залишок: <span style="text-decoration: underline">{balance}</span> кг'
+				f'-> залишок: <span style="text-decoration: underline">{balance:.2f}</span> кг'
 		#f'вагою <span style="text-decoration: underline">{abs(action.getWeight()):.2f}</span>, кг'
 		self._db.newLogMsg(original_action.getProductId(), msg)
 		self.reloadAll()

@@ -1,9 +1,7 @@
-import datetime
+from datetime import datetime
 from PyQt6 import QtSql
 from Decorators import Singleton, Timing
-from Models.Action import Action, Filter
-
-from pprint import pprint
+from ProjectTypes import *
 
 class CustomQuery(QtSql.QSqlQuery):
     """ class used for catching sql errors """
@@ -96,21 +94,18 @@ class DBManager:
 
     def getProducts(self) -> []:
         self.query.exec("""select 
-                            products.id, products.name, products.counter, sum(actions.weight) as total_amount                        
-                            from products 
-                            join actions on(products.id = actions.product_id)                            
-                            group by actions.product_id""")
+                                    products.id, products.name, products.counter, sum(actions.weight) as total_amount                        
+                                    from products 
+                                    join actions on(products.id = actions.product_id)                            
+                                    group by actions.product_id""")
         lst = []
         if self.query.isActive():
             self.query.first()
             while self.query.isValid():
-                arr = dict({
-                    'id':       self.query.value('products.id'),
-                    'name':     self.query.value('products.name'),
-                    'counter':  self.query.value('products.counter'),
-                    'sum':      self.query.value('total_amount')
-                })
-                lst.append(arr)
+                product = Product(product_id = self.query.value('products.id'),
+                                  name = self.query.value('products.name'),
+                                  balance = self.query.value('total_amount'))
+                lst.append(product)
                 self.query.next()
         self.query.clear()
         return lst
@@ -216,7 +211,7 @@ class DBManager:
 
     @staticmethod
     def getDateTime() -> {}:
-        date = datetime.datetime.now()
+        date = datetime.now()
         res = dict({'s_date': date.strftime("%H:%M %d.%m.%Y"), 'datetime': str(date)})
         return res
 

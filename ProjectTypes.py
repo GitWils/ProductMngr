@@ -80,3 +80,21 @@ class Action:
 
 	def getDate(self) -> datetime:
 		return self._date
+
+class Product:
+	def __init__(self, product_id: int, name: str, balance: float) -> None:
+		self._id = product_id
+		self._name = name
+		self._balance = balance
+
+	def __str__(self) -> str:
+		return f'id: {self._id}, name: {self._name}, balance: {self._balance}'
+
+	def getId(self) -> int:
+		return self._id
+
+	def getName(self) -> str:
+		return self._name
+
+	def getBalance(self) -> float:
+		return self._balance
