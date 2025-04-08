@@ -1,6 +1,6 @@
 from PyQt6 import QtGui, QtCore, QtWidgets
 import Views.Widgets.CustomWidgets as CustomWidgets
-from Models.Action import Action
+from ProjectTypes import Action
 from datetime import datetime
 
 from pprint import pprint

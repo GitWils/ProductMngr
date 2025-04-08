@@ -64,7 +64,7 @@ class Project(QtWidgets.QWidget):
         return tabs
 
     @Timing
-    def createProductsTab(self) -> None:
+    def createProductsTab(self) -> ProductsTable:
         """ products tab contents creation """
         self._productTable = ProductView.ProductTable(self._productMngr.getProducts())
         self._actionTable = ActionView.ActionTable(self._productMngr.getActionsList())
