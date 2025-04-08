@@ -66,7 +66,7 @@ class ProductMngr:
 		self.reloadActions()
 
 	def reloadProducts(self) -> None:
-		# self._products.clear()
+		self._products.clear()
 		self._products = self._db.getProducts()
 
 	def reloadActions(self) -> None:

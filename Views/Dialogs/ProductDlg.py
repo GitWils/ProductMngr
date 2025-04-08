@@ -55,7 +55,7 @@ class ProductDlg(QDialog):
 	def getProductsList(self) -> []:
 		res = []
 		for product in self._products:
-			res.append(product['name'])
+			res.append(product.getName())
 		return res
 
 class AddProductDlg(ProductDlg):

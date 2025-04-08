@@ -94,9 +94,9 @@ class DBManager:
 
     def getProducts(self) -> []:
         self.query.exec("""select 
-                                    products.id, products.name, products.counter, sum(actions.weight) as total_amount                        
+                                    products.id, products.name, products.counter, coalesce(sum(actions.weight),0) as total_amount                        
                                     from products 
-                                    join actions on(products.id = actions.product_id)                            
+                                    left join actions on(products.id = actions.product_id)                            
                                     group by actions.product_id""")
         lst = []
         if self.query.isActive():
