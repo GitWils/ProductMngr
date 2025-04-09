@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*using palettes: #1E2022, #52616B, #C9D6DF, #F0F5F9, orange - #e95420*/
 QWidget {
     background-color: "#343938";
@@ -366,7 +365,6 @@ QScrollBar::handle:vertical {
  QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
      background: none;
  }
-=======
 /*using palettes: #1E2022, #52616B, #C9D6DF, #F0F5F9, orange - #e95420*/
 QWidget {
     background-color: "#343938";
@@ -382,7 +380,7 @@ QPushButton {
     color: "#F0F5F9";
 }
 
-#dlgBtn, QMessageBox QPushButton {
+#printer QPushButton, #dlgBtn, QMessageBox QPushButton, QDialogButtonBox QPushButton {
     font-size: 16px;
     color: "#F0F5F9";
     background-color: "#52616B";
@@ -391,13 +389,17 @@ QPushButton {
     min-width: 207px;
 }
 
-#dlgBtn:pressed, QMessageBox QPushButton:pressed {
+#printer QPushButton:pressed, #dlgBtn:pressed, QMessageBox QPushButton:pressed, QDialogButtonBox QPushButton:pressed {
     font-size: 16px;
     color: "#F0F5F9";
     background-color: "#52616B"
 }
 
-#dlgBtn:hover, QMessageBox QPushButton:hover {
+#printer QToolButton {
+    background-color: "#52616B";
+}
+
+#dlgBtn:hover, #printer QPushButton:hover, QMessageBox QPushButton:hover, QDialogButtonBox QPushButton:hover {
     border: 2px solid "#e95420";
 }
 
@@ -729,5 +731,4 @@ QScrollBar::handle:vertical {
  QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
      background: none;
  }
->>>>>>> develop
  /********************************* QProgressBar UI settings ***************************************/

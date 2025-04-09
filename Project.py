@@ -48,6 +48,7 @@ class Project(QtWidgets.QWidget):
             printer = QPrinter()
             print_dialog = QPrintDialog(printer, self)
             print_dialog.setWindowTitle("Прінтер")
+            print_dialog.setObjectName('printer')
             if print_dialog.exec() == QPrintDialog.DialogCode.Accepted:
                 document = QTextDocument()
                 self._productMngr.setFilterPeriod(dialog.getBeginDateStr(), dialog.getEndDateStr())
