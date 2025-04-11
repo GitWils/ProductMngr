@@ -1,4 +1,6 @@
 from datetime import datetime
+from enum import Enum
+from PyQt6.QtWidgets import QStyleFactory, QDialog
 
 class Filter:
 	def __init__(self, product_id=0, limit: int=50, begin_date: str=None, end_date: str=None) -> None:
@@ -98,3 +100,7 @@ class Product:
 
 	def getBalance(self) -> float:
 		return self._balance
+
+class Theme(Enum):
+    OS = 0
+    Dark = 1

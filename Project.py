@@ -2,21 +2,46 @@ from PyQt6 import QtWidgets
 from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtPrintSupport import QPrintDialog, QPrinter
 from PyQt6.QtGui import QTextDocument
-from PyQt6.QtWidgets import QTabWidget
+from PyQt6.QtWidgets import QTabWidget, QDialog, QStyleFactory
 
 import Views.Dialogs.ProductDlg as Dialogs
-from Views.Dialogs.PrintDlg import PrintDlg
 import Views.ProductView as ProductView
 import Views.ActionView as ActionView
 import Views.Widgets.CustomWidgets as CustomWidgets
+from Views.Dialogs.PrintDlg import PrintDlg
 from Views.Widgets.ProductsTable import ProductsTable
 from Views.Widgets.Logger import Logger
 from Models.ProductManager import ProductMngr
 from Decorators import Timing
+from ProjectTypes import Theme
 
 from pprint import pprint
 
-class Project(QtWidgets.QWidget):
+class Settings:
+    def __init__(self, theme: Theme = Theme.OS) -> None:
+        self._theme = theme
+
+    def setTheme(self, theme: Theme, dialog: QDialog = None) -> None:
+        self._theme = theme
+        if dialog and self._theme == Theme.OS:
+            Settings.setOSTheme(dialog)
+        elif dialog and self._theme == Theme.Dark:
+            Settings.setDarkTheme(dialog)
+
+    def getTheme(self) -> Theme:
+        return self._theme
+
+    @staticmethod
+    def setDarkTheme(dialog: QDialog) -> None:
+        with open("style.css", "r") as file:
+            dialog.setStyleSheet(file.read())
+
+    @staticmethod
+    def setOSTheme(dialog: QDialog) -> None:
+        dialog.setStyleSheet("")
+        dialog.setStyle(QStyleFactory.create("Windows"))
+
+class Project(QtWidgets.QWidget, Settings):
     """ widget fills main window"""
     def __init__(self) -> None:
         super().__init__()
@@ -42,6 +67,7 @@ class Project(QtWidgets.QWidget):
 
     def printActions(self) -> None:
         dialog = PrintDlg()
+        self.setTheme(self.getTheme(), dialog)
         dialog.move(self._getInitPos(dialog.width()))
         result = dialog.exec()
         if result:
@@ -99,6 +125,7 @@ class Project(QtWidgets.QWidget):
         """ if the add action button was clicked """
         dialog = Dialogs.AddProductDlg(self._productMngr.getProducts())
         dialog.move(self._getInitPos(dialog.width()))
+        self.setTheme(self.getTheme(), dialog)
         result = dialog.exec()
         if result:
             self._productMngr.addAction(dialog.getProduct(), dialog.getWeight(), dialog.getNote())
@@ -108,6 +135,7 @@ class Project(QtWidgets.QWidget):
     def subtractActionBtn(self) -> None:
         """ if subtract action button was clicked """
         dialog = Dialogs.SubtractProductDlg(self._productMngr.getProducts())
+        self.setTheme(self.getTheme(), dialog)
         dialog.move(self._getInitPos(dialog.width()))
         result = dialog.exec()
         if result:
@@ -121,6 +149,7 @@ class Project(QtWidgets.QWidget):
         if selectedActionID and not self._actionTable.isBlockedRow(selectedActionID):
             currentAction = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
             dialog = Dialogs.EditProductDlg(self._productMngr.getProducts(), self._productMngr.getActionById(selectedActionID))
+            self.setTheme(self.getTheme(), dialog)
             dialog.move(self._getInitPos(dialog.width()))
             result = dialog.exec()
             if result:
@@ -137,6 +166,7 @@ class Project(QtWidgets.QWidget):
         if self._actionTable.getSelectedRowId():
             currentAction = self._productMngr.getActionById(self._actionTable.getSelectedRowId())
             dialog = Dialogs.DelProductDlg(self._productMngr.getProducts(), currentAction)
+            self.setTheme(self.getTheme(), dialog)
             dialog.move(self._getInitPos(dialog.width()))
             result = dialog.exec()
             if result:
@@ -151,9 +181,3 @@ class Project(QtWidgets.QWidget):
     def reloadTables(self) -> None:
         self._actionTable.loadData(self._productMngr.getActionsList())
         self._productTable.loadData(self._productMngr.getProducts())
-
-    # def topLeft(self):
-    #     qr = self.frameGeometry()
-    #     cp = self.screen().availableGeometry().center()
-    #     qr.moveCenter(cp)
-    #     return qr.topLeft()

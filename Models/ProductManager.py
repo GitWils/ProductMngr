@@ -1,7 +1,6 @@
 from Models.DBManager import DBManager
 from ProjectTypes import *
 from pprint import pprint
-import html
 import re
 
 class ProductMngr:
@@ -126,3 +125,6 @@ class ProductMngr:
 
 	def filterClear(self) -> None:
 		self._filter.clear()
+
+	def saveTheme(self, theme: Theme):
+		self._db.setTheme(theme)

@@ -3,13 +3,15 @@
 from PyQt6 import QtWidgets 
 from PyQt6.QtCore import Qt, QEvent, QTranslator
 from PyQt6.QtGui import QIcon, QAction
+from PyQt6.QtWidgets import QStyleFactory
 
 from Views.Widgets.CustomWidgets import SplashScreen
 from Views.Widgets.Translator import UkrainianTranslator
-from Project import Project
+from Project import Project, Settings
+from ProjectTypes import Theme
 import sys
 
-class MainWindow(QtWidgets.QMainWindow):
+class MainWindow(QtWidgets.QMainWindow, Settings):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Облік продукту ")
@@ -27,18 +29,39 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _createMenuBar(self):
         menuBar = QtWidgets.QMenuBar(self)
-        file_menu = QtWidgets.QMenu("&Файл", self)
+        fileMenu = QtWidgets.QMenu("&Файл", self)
         excellAct = QAction("&Експорт в Excel", self)
         #excellAct.triggered.connect(self.pr.openSaveDlg)
-        file_menu.addAction(excellAct)
-        print_action = QAction("&Друкувати журнал", self)
-        print_action.triggered.connect(self.pr.printActions)
-        file_menu.addAction(print_action)
-        view_menu = QtWidgets.QMenu("&Вигляд", self)
-        view_menu.addAction(QAction("&Налаштування", self))
-        menuBar.addMenu(file_menu)
-        menuBar.addMenu(view_menu)
+        fileMenu.addAction(excellAct)
+        printAct = QAction("&Друкувати журнал", self)
+        printAct.triggered.connect(self.pr.printActions)
+        fileMenu.addAction(printAct)
+
+        viewMenu = QtWidgets.QMenu("&Вигляд", self)
+        styleMenu = QtWidgets.QMenu("&Тема", self)
+        viewMenu.addMenu(styleMenu)
+        darkThemeAct = QAction("Темна", self)
+        darkThemeAct.triggered.connect(self._setDarkTheme)
+        osThemeAct = QAction("Звичайна", self)
+        osThemeAct.triggered.connect(self._setOSTheme)
+        styleMenu.addAction(osThemeAct)
+        styleMenu.addAction(darkThemeAct)
+
+        menuBar.addMenu(fileMenu)
+        menuBar.addMenu(viewMenu)
         return menuBar
+
+    def _setDarkTheme(self):
+        with open("style.css", "r") as file:
+            self.setStyleSheet(file.read())
+        self.setTheme(Theme.Dark)
+        self.pr.setTheme(Theme.Dark)
+
+    def _setOSTheme(self):
+        self.setStyleSheet("")
+        self.setStyle(QStyleFactory.create("Windows"))
+        self.setTheme(Theme.OS)
+        self.pr.setTheme(Theme.OS)
 
     def event(self, e) -> QtWidgets.QWidget.event:
         """ hotkey handling """
@@ -60,8 +83,8 @@ class MainWindow(QtWidgets.QMainWindow):
 def main():
     """ start program function """
     app = QtWidgets.QApplication(sys.argv)
-    with open("style.css", "r") as file:
-        app.setStyleSheet(file.read())
+    # with open("style.css", "r") as file:
+    #     app.setStyleSheet(file.read())
     translator = UkrainianTranslator()
     app.installTranslator(translator)
     # Створюємо і показуємо заставку

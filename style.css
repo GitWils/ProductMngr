@@ -505,6 +505,11 @@ QHeaderView {
     color: "#F0F5F9";
 }
 
+QHeaderView::down-arrow, QHeaderView::up-arrow {
+    width: 15px;
+    height: 15px;
+}
+
 QTableView::item {
     /*border: 1px solid "#fd1321";*/
     color: #323335;

@@ -34,6 +34,12 @@ class DBManager:
                             blocked bool default false,                    
                             str_date text, dt datetime default current_timestamp)""")
             self.query.clear()
+        if 'settings' not in self.con.tables():
+            self.query.exec("""create table settings (id integer primary key autoincrement,
+                            name text secondary key,
+                            value integer)""")
+            self.query.exec("""insert into settings (name, value) values (theme, 0)""")
+            self.query.clear()
         if 'logs' not in self.con.tables():
             self.query.exec("""create table logs (id integer primary key autoincrement,
                             product_id integer secondary key, 
@@ -158,6 +164,21 @@ class DBManager:
         self.query.exec()
         self.query.clear()
         self.query.exec("delete from products where counter < 1")
+        self.query.clear()
+
+    def getTheme(self):
+        res = 0
+        self.query.prepare('select value from settings where name="theme"')
+        if self.query.exec():
+            if self.query.first():
+                res = self.query.value(0)
+        self.query.clear()
+        return res
+
+    def setTheme(self, theme: Theme):
+        self.query.prepare("""update settings set value=:theme where name='theme'""")
+        self.query.bindValue(':theme', theme.value)
+        self.query.exec()
         self.query.clear()
 
     def getLogs(self, fltr: Filter) -> []:
