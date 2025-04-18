@@ -32,12 +32,12 @@ class Settings:
         return self._theme
 
     @staticmethod
-    def setDarkTheme(dialog: QDialog) -> None:
+    def setDarkTheme(dialog: QtWidgets) -> None:
         with open("style.css", "r") as file:
             dialog.setStyleSheet(file.read())
 
     @staticmethod
-    def setOSTheme(dialog: QDialog) -> None:
+    def setOSTheme(dialog: QtWidgets) -> None:
         dialog.setStyleSheet("")
         dialog.setStyle(QStyleFactory.create("Windows"))
 
@@ -45,7 +45,6 @@ class Project(QtWidgets.QWidget, Settings):
     """ widget fills main window"""
     def __init__(self) -> None:
         super().__init__()
-
         self._productMngr = ProductMngr()
         self._actionTable = None
         self._productTable = None
@@ -54,6 +53,7 @@ class Project(QtWidgets.QWidget, Settings):
         self._logArea = Logger()
 
         self.initMenu()
+        self.setTheme(self._productMngr.getTheme())
 
     def initMenu(self) -> None:
         centralLayout = QtWidgets.QVBoxLayout()
@@ -181,3 +181,10 @@ class Project(QtWidgets.QWidget, Settings):
     def reloadTables(self) -> None:
         self._actionTable.loadData(self._productMngr.getActionsList())
         self._productTable.loadData(self._productMngr.getProducts())
+
+    def setTheme(self, theme: Theme, dialog: QDialog = None):
+        self._productMngr.saveTheme(theme)
+        super().setTheme(theme, dialog)
+
+    def getTheme(self) -> Theme:
+        return self._productMngr.getTheme()

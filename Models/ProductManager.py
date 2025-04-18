@@ -126,5 +126,8 @@ class ProductMngr:
 	def filterClear(self) -> None:
 		self._filter.clear()
 
-	def saveTheme(self, theme: Theme):
+	def saveTheme(self, theme: Theme) -> None:
 		self._db.setTheme(theme)
+
+	def getTheme(self) -> Theme:
+		return  self._db.getTheme()

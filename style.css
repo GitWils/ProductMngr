@@ -506,8 +506,19 @@ QHeaderView {
 }
 
 QHeaderView::down-arrow, QHeaderView::up-arrow {
-    width: 15px;
-    height: 15px;
+    width: 10px;
+    height: 10px;
+    margin: 0px;
+    padding: 0px;
+    font-size: 4px;
+}
+
+QHeaderView::down-arrow {
+    image: url(img/actdown.png) no-repeat top;
+}
+
+QHeaderView::up-arrow {
+    image: url(img/actup.png) no-repeat top;
 }
 
 QTableView::item {

@@ -166,12 +166,12 @@ class DBManager:
         self.query.exec("delete from products where counter < 1")
         self.query.clear()
 
-    def getTheme(self):
-        res = 0
+    def getTheme(self) -> Theme:
+        res = Theme.OS
         self.query.prepare('select value from settings where name="theme"')
         if self.query.exec():
             if self.query.first():
-                res = self.query.value(0)
+                res = Theme(self.query.value(0))
         self.query.clear()
         return res
 

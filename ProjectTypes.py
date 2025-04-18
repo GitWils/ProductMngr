@@ -1,5 +1,5 @@
 from datetime import datetime
-from enum import Enum
+from enum import IntEnum
 from PyQt6.QtWidgets import QStyleFactory, QDialog
 
 class Filter:
@@ -101,6 +101,6 @@ class Product:
 	def getBalance(self) -> float:
 		return self._balance
 
-class Theme(Enum):
-    OS = 0
-    Dark = 1
+class Theme(IntEnum):
+	OS = 0
+	Dark = 1
