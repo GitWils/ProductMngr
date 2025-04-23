@@ -18,31 +18,38 @@ class Filter:
 	def getProductId(self) -> int:
 		return self._productId
 
-	def setBeginDate(self, begin_date: str):
+	def setBeginDate(self, begin_date: str) -> None:
 		self._beginDate = begin_date
 
-	def getBeginDate(self):
+	def getBeginDate(self) -> str:
 		return self._beginDate
 
-	def setEndDate(self, to_date: str):
+	def setEndDate(self, to_date: str) -> None:
 		self._endDate = to_date
 
-	def getEndDate(self):
+	def getEndDate(self) -> str:
 		return self._endDate
 
-	def setLimit(self, limit: int):
+	def setLimit(self, limit: int) -> None:
 		self._limit = limit
 
-	def getLimit(self):
+	def getLimit(self) -> int:
 		return self._limit
 
-	def clear(self):
+	def clear(self) -> None:
 		self._beginDate = None
 		self._endDate = None
 		self._limit = 50
 
 class Action:
-	def __init__(self, name: str, name_id: int, action_id: int, weight: float, note: str, blocked: bool, date: datetime) -> None:
+	def __init__(self,
+	             name: str,
+	             name_id: int,
+	             action_id: int,
+	             weight: float,
+	             note: str,
+	             blocked: bool,
+	             date: datetime) -> None:
 		""" action unit
 		name - job title
 		name_id - id number in product table

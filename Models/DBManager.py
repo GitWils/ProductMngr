@@ -38,7 +38,7 @@ class DBManager:
             self.query.exec("""create table settings (id integer primary key autoincrement,
                             name text secondary key,
                             value integer)""")
-            self.query.exec("""insert into settings (name, value) values (theme, 0)""")
+            self.query.exec("""insert into settings (name, value) values ('theme', 0)""")
             self.query.clear()
         if 'logs' not in self.con.tables():
             self.query.exec("""create table logs (id integer primary key autoincrement,
@@ -211,24 +211,6 @@ class DBManager:
         self.query.bindValue(':dt', date['datetime'])
         self.query.exec()
         self.query.clear()
-
-    def getWhereFromFilter(self, fltr: Filter, prefix: str) -> str:
-        where = ''
-        # if filter.get('contracts'):
-        #     where = ' and ('
-        #     for id in filter['contracts']:
-        #         where += f' {prefix}.contract_id = {id} or '
-        #     where = where[:-4] + ')'
-        # if filter.get('from'):
-        #     where += f' and({prefix}.dt > "{filter['from']}") '
-        # if filter.get('to'):
-        #     where += f' and({prefix}.dt < "{filter['to']}")'
-        # if where == '': #if need to find nothing
-        #     where = f' and ({prefix}.contract_id = 0)'
-        if fltr.getBeginDate():
-            where += f" where {prefix}.dt > '{fltr.getBeginDate()}'"
-            where += f" and {prefix}.dt < '{fltr.getEndDate()}' "
-        return where
 
     @staticmethod
     def getDateTime() -> {}:
