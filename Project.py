@@ -8,6 +8,7 @@ import Views.Dialogs.ProductDlg as Dialogs
 import Views.ProductView as ProductView
 import Views.ActionView as ActionView
 import Views.Widgets.CustomWidgets as CustomWidgets
+from Views.Localization import _
 from Views.Dialogs.PrintDlg import PrintDlg
 from Views.Widgets.ProductsTable import ProductsTable
 from Views.Widgets.Logger import Logger
@@ -58,7 +59,7 @@ class Project(QtWidgets.QWidget, Settings):
     def initMenu(self) -> None:
         centralLayout = QtWidgets.QVBoxLayout()
         self.setLayout(centralLayout)
-        lblLog = QtWidgets.QLabel("Журнал подій:")
+        lblLog = QtWidgets.QLabel(_('lbl.logs'))
         # lblLog.clicked.connect(self.pringLogs)
         centralLayout.addWidget(self._initTabs())
         centralLayout.addWidget(lblLog)
@@ -85,8 +86,8 @@ class Project(QtWidgets.QWidget, Settings):
 
     def _initTabs(self) -> QTabWidget:
         tabs = QtWidgets.QTabWidget()
-        tabs.addTab(self.createProductsTab(), "Продукти")
-        tabs.addTab(QtWidgets.QLabel("Тут могла бути ваша реклама"), "Звіт")
+        tabs.addTab(self.createProductsTab(), _("menu.products"))
+        tabs.addTab(QtWidgets.QLabel("Тут могла бути ваша реклама"), _("menu.report"))
         tabs.setCurrentIndex(0)
         return tabs
 
@@ -96,10 +97,10 @@ class Project(QtWidgets.QWidget, Settings):
         self._productTable = ProductView.ProductTable(self._productMngr.getProducts())
         self._actionTable = ActionView.ActionTable(self._productMngr.getActionsList())
         tab = ProductsTable(self._productTable, self._actionTable)
-        tab.addButton(self.addActionBtn, CustomWidgets.DlgMode.Add, True, 'Добавити продукт')
-        subBtn = tab.addButton(self.subtractActionBtn, CustomWidgets.DlgMode.Sub, True, 'Забрати продукт')
-        self._editBtn = tab.addButton(self.editActionBtn, CustomWidgets.DlgMode.Edit, False, 'Редагувати переміщення')
-        self._delBtn = tab.addButton(self.delActionBtn, CustomWidgets.DlgMode.Del, False, 'Видалити переміщення')
+        tab.addButton(self.addActionBtn, CustomWidgets.DlgMode.Add, True, _("tooltip.add"))
+        subBtn = tab.addButton(self.subtractActionBtn, CustomWidgets.DlgMode.Sub, True, _("tooltip.pickup"))
+        self._editBtn = tab.addButton(self.editActionBtn, CustomWidgets.DlgMode.Edit, False, _("tooltip.edit"))
+        self._delBtn = tab.addButton(self.delActionBtn, CustomWidgets.DlgMode.Del, False, _("tooltip.del"))
         self._productTable.clicked.connect(self.showActions)
         self._actionTable.clicked.connect(self.setEditBtnsStatus)
         self._actionTable.doubleClicked.connect(self.editActionBtn)

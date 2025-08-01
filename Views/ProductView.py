@@ -1,23 +1,23 @@
-from tkinter import BooleanVar
-
+from typing import List
 from PyQt6 import QtGui, QtCore
 import Views.Widgets.CustomWidgets as CustomWidgets
+from Views.Localization import _
 from ProjectTypes import *
 from pprint import pprint
 
 class ProductTable(CustomWidgets.Table):
-	def __init__(self, products: [] = None) -> None:
+	def __init__(self, products: List[Action]) -> None:
 		super().__init__()
 		self._components = products
 		self.loadData(self._components)
 
-	def loadData(self, components: [Action]) -> None:
+	def loadData(self, components: List[Action]) -> None:
 		""" load and reload data """
 		self._components = components
 		sti = TableModel(self._components)
 		self.reset()
 		sti.clear()
-		sti.setHorizontalHeaderLabels(['Найменування', 'Залишок (кг)', 'id'])
+		sti.setHorizontalHeaderLabels([_('table.name'), _('table.left'), 'id'])
 		sti.setRowCount(len(self._components))
 		proxy_model = CustomSortFilterProxyModel()
 		proxy_model.setSourceModel(sti)

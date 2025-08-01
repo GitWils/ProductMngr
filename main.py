@@ -1,12 +1,13 @@
 #! /usr/bin/python3
 
 from PyQt6 import QtWidgets 
-from PyQt6.QtCore import Qt, QEvent, QTranslator
+from PyQt6.QtCore import Qt, QEvent
 from PyQt6.QtGui import QIcon, QAction
-from PyQt6.QtWidgets import QStyleFactory, QMenu
+from PyQt6.QtWidgets import QMenu
 
 from Views.Widgets.CustomWidgets import SplashScreen
-from Views.Widgets.Translator import UkrainianTranslator
+from Views.Widgets.Translator import UkrainianTranslator #translations for print dialog menu
+from Views.Localization import _
 from Project import Project, Settings
 from ProjectTypes import Theme
 import sys
@@ -14,7 +15,8 @@ import sys
 class MainWindow(QtWidgets.QMainWindow, Settings):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Облік продукту ")
+        # self.setWindowTitle(_('test.message', txt='aaa'))
+        self.setWindowTitle(_('app.title'))
         self.setMinimumSize(1004, 755)
         self.centerWindow()
         self._initUI()
@@ -35,22 +37,22 @@ class MainWindow(QtWidgets.QMainWindow, Settings):
         return menuBar
 
     def __createFileMenu(self) -> QMenu:
-        fileMenu = QtWidgets.QMenu("&Файл", self)
-        excellAct = QAction("&Експорт в Excel", self)
+        fileMenu = QtWidgets.QMenu(_("menu.file"), self)
+        excellAct = QAction(_("menu.export"), self)
         # excellAct.triggered.connect(self.pr.openSaveDlg)
         fileMenu.addAction(excellAct)
-        printAct = QAction("&Друкувати журнал", self)
+        printAct = QAction(_("menu.print"), self)
         printAct.triggered.connect(self.pr.printActions)
         fileMenu.addAction(printAct)
         return fileMenu
 
     def __createViewMenu(self) -> QMenu:
-        viewMenu = QtWidgets.QMenu("&Вигляд", self)
-        styleMenu = QtWidgets.QMenu("&Тема", self)
+        viewMenu = QtWidgets.QMenu(_("menu.view"), self)
+        styleMenu = QtWidgets.QMenu(_("menu.theme"), self)
         viewMenu.addMenu(styleMenu)
-        darkThemeAct = QAction("Темна", self)
+        darkThemeAct = QAction(_("menu.dark"), self)
         darkThemeAct.triggered.connect(self._setDarkTheme)
-        osThemeAct = QAction("Звичайна", self)
+        osThemeAct = QAction(_("menu.default"), self)
         osThemeAct.triggered.connect(self._setOSTheme)
         styleMenu.addAction(osThemeAct)
         styleMenu.addAction(darkThemeAct)

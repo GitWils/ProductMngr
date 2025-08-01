@@ -99,15 +99,6 @@ class DialogGrid:
         self.__addWidgets(lbl, note)
         return note
 
-    def addComboBox(self, txt: str) -> QtWidgets.QComboBox:
-        lbl = QtWidgets.QLabel(txt)
-        comboBox = QtWidgets.QComboBox()
-        comboBox.addItem('Форма 1', 1)
-        comboBox.addItem('Форма 2', 2)
-        comboBox.addItem('Форма 3', 3)
-        self.__addWidgets(lbl, comboBox)
-        return comboBox
-
     def addButtonBox(self,
                      doubleBtnMode: bool,
                      acceptedFunc: Callable[[], None],

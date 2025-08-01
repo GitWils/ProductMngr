@@ -5,6 +5,8 @@ from PyQt6.QtCore import Qt, QTimer, QSize
 from enum import Enum, auto
 import sys
 
+from Views.Localization import _
+
 class DlgMode(Enum):
     Add = auto()
     Sub = auto()
@@ -76,11 +78,11 @@ class ButtonBox(QtWidgets.QDialogButtonBox):
             self.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel |
                                 QtWidgets.QDialogButtonBox.StandardButton.Ok)
             self.button(QtWidgets.QDialogButtonBox.StandardButton.Cancel).setObjectName('dlgBtn')
-            self.button(QtWidgets.QDialogButtonBox.StandardButton.Cancel).setText('Скасувати')
+            self.button(QtWidgets.QDialogButtonBox.StandardButton.Cancel).setText(_("btn.cancel"))
         else:
             self.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setObjectName('dlgBtn')
-        self.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setText('Зберегти')
+        self.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setText(_("btn.save"))
         self.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDefault(True)
         if acceptedFunc: self.accepted.connect(acceptedFunc)
         if rejectedFunc: self.rejected.connect(rejectedFunc)

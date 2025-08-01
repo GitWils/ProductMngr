@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QDialog
 from PyQt6.QtCore import Qt
 from Views.Widgets.DialogGrid import DialogGrid
+from Views.Localization import _
 from pprint import pprint
 from abc import ABC, abstractmethod
 
@@ -13,9 +14,9 @@ class ProductDlg(QDialog):
 		self._products = products
 		# self.setWindowFlags(self.windowFlags() & ~Qt.WindowType.WindowMaximizeButtonHint)
 		self._dlgGrid = DialogGrid()
-		self._drawProductField('Найменування продукту:')
-		self._wgtWeight = self._dlgGrid.addFloatBox('Вага (кг):')
-		self._wgtNote = self._dlgGrid.addNote('Примітка:')
+		self._drawProductField(_("dialog.name"))
+		self._wgtWeight = self._dlgGrid.addFloatBox(_("dialog.weight"))
+		self._wgtNote = self._dlgGrid.addNote(_("dialog.note"))
 		self._bbox = self._dlgGrid.addButtonBox(True, acceptedFunc = self.accept, rejectedFunc=self.reject)
 		self.setLayout(self._dlgGrid.getGrid())
 		self._initValues()
@@ -92,10 +93,10 @@ class SubtractProductDlg(ProductDlg):
 			if self.getProduct() == item.getName():
 				present = True
 			if self.getProduct() == item.getName() and self.getWeight() > item.getBalance():
-				self.setMsg('Не вистачає продукту, перевірте залишки!')
+				self.setMsg(_("msg.missing"))
 				return
 		if not  present:
-			self.setMsg(f'Не вистачає продукту, перевірте залишки!')
+			self.setMsg(_("msg.missing"))
 			return
 		super().accept()
 
@@ -124,7 +125,7 @@ class EditProductDlg(ProductDlg):
 		return 1
 
 	def _initValues(self) -> None:
-		self.setWindowTitle("Редагування запису")
+		self.setWindowTitle(_("title.edit"))
 		self._wgtWeight.setValue(abs(self._action.getWeight()))
 		self._wgtNote.setText(self._action.getNote())
 
@@ -140,10 +141,10 @@ class DelProductDlg(ProductDlg):
 		super().__init__(products)
 
 	def _initValues(self) -> None:
-		self.setWindowTitle("Видалення запису")
+		self.setWindowTitle(_("title.delete"))
 		self._wgtWeight.setValue(abs(self._action.getWeight()))
 		self._wgtNote.setText(self._action.getNote())
-		self._bbox.setBtnOkText('Видалити')
+		self._bbox.setBtnOkText(_("btn.delete"))
 		self._setEnabledAll(False)
 
 	def _drawProductField(self, name: str) -> None:

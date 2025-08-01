@@ -18,17 +18,17 @@ class ProductMngr:
 		# for key, item in self._actions.items():
 		# 	print(f"   {item}")
 
-	def getProducts(self) -> []:
+	def getProducts(self) -> list:
 		return self._products
 
-	def getActionsList(self) -> []:
-		res = []
+	def getActionsList(self) -> list:
+		res = list()
 		for key, val in self._actions.items():
 			res.append(val)
 		return res
 
-	def getActionsIdList(self) -> []:
-		res = []
+	def getActionsIdList(self) -> list:
+		res = list()
 		for key, val in self._actions.items():
 			res.append(key)
 		return res

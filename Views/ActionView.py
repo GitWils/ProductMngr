@@ -1,5 +1,6 @@
 from PyQt6 import QtGui, QtCore, QtWidgets
 import Views.Widgets.CustomWidgets as CustomWidgets
+from Views.Localization import _
 from ProjectTypes import Action
 from datetime import datetime
 
@@ -17,7 +18,7 @@ class ActionTable(CustomWidgets.Table):
 		sti = TableModel(self._components)
 		self.reset()
 		sti.clear()
-		sti.setHorizontalHeaderLabels(['Найменування', 'Вага (кг)', 'Дата','Примітка', 'id'])
+		sti.setHorizontalHeaderLabels([_("table.name"), _("table.weight"), _("table.date"), _("table.note"), 'id'])
 		sti.setRowCount(len(self._components))
 		proxy_model = CustomSortFilterProxyModel()
 		proxy_model.setSourceModel(sti)
