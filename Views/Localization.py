@@ -120,5 +120,5 @@ class Translator:
 
 def _(key, **kwargs) -> str:
 	translator = Translator()
-	translator.set_language('en')
+	translator.set_language('uk')
 	return 	translator.t(key, **kwargs)

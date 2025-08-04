@@ -4,9 +4,12 @@ from Views.Widgets.DialogGrid import DialogGrid
 from Views.Localization import _
 from ProjectTypes import *
 from pprint import pprint
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, ABCMeta
 
-class ProductDlg(QDialog, ABC):
+class QtABCMeta(type(QDialog), ABCMeta):
+    pass
+
+class ProductDlg(QDialog,  metaclass=QtABCMeta):
 	def __init__(self, products: list) -> None:
 		super().__init__()
 		self.setWindowModality(Qt.WindowModality.ApplicationModal)
