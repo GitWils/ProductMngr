@@ -1,4 +1,4 @@
-from datetime import datetime
+# from datetime import datetime
 from PyQt6 import QtSql
 from Decorators import Singleton, Timing
 from ProjectTypes import *
@@ -98,13 +98,13 @@ class DBManager:
         self.query.exec()
         self.query.clear()
 
-    def getProducts(self) -> []:
+    def getProducts(self) -> list:
         self.query.exec("""select 
                                     products.id, products.name, products.counter, coalesce(sum(actions.weight),0) as total_amount                        
                                     from products 
                                     left join actions on(products.id = actions.product_id)                            
                                     group by actions.product_id""")
-        lst = []
+        lst = list()
         if self.query.isActive():
             self.query.first()
             while self.query.isValid():
@@ -181,7 +181,7 @@ class DBManager:
         self.query.exec()
         self.query.clear()
 
-    def getLogs(self, fltr: Filter) -> []:
+    def getLogs(self, fltr: Filter) -> list:
         """ returns array of logs """
         if fltr.getBeginDate():
             self.query.prepare('select * from logs where dt > :begin and dt < :end order by id desc limit :limit')
@@ -191,7 +191,7 @@ class DBManager:
             self.query.prepare('select * from logs order by id desc limit :limit')
         self.query.bindValue(':limit', fltr.getLimit())
         self.query.exec()
-        lst = []
+        lst = list()
         if self.query.isActive():
             self.query.first()
             while self.query.isValid():

@@ -1,6 +1,5 @@
 from datetime import datetime
 from enum import IntEnum
-from PyQt6.QtWidgets import QStyleFactory, QDialog
 
 class Filter:
 	def __init__(self, product_id=0, limit: int=50, begin_date: str=None, end_date: str=None) -> None:

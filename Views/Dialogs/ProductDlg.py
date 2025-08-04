@@ -6,7 +6,7 @@ from ProjectTypes import *
 from pprint import pprint
 from abc import ABC, abstractmethod
 
-class ProductDlg(QDialog):
+class ProductDlg(QDialog, ABC):
 	def __init__(self, products: list) -> None:
 		super().__init__()
 		self.setWindowModality(Qt.WindowModality.ApplicationModal)
