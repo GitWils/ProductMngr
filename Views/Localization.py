@@ -1,5 +1,5 @@
-import json
-from pathlib import Path
+# import json
+# from pathlib import Path
 
 class Translator:
 	def __init__(self):
@@ -27,6 +27,7 @@ class Translator:
 				'menu.report': 'Reports',
 
 				'msg.missing': 'Missing product, check the leftovers!',
+				'msg.nochanges': 'No parameter has been changed!\nChange the value, or click "{txt}"',
 
 				'lbl.logs': 'Logs:',
 
@@ -40,6 +41,8 @@ class Translator:
 
 				'title.edit': 'Editing a recording',
 				'title.delete': 'Deleting an entry',
+				'title.receipt': 'Product receipt',
+				'title.submit': 'Submit the product to work',
 
 				'tooltip.submit': 'Submit the product to work',
 				'tooltip.add': 'Add product',
@@ -69,6 +72,7 @@ class Translator:
 				'menu.report': 'Звіт',
 
 				'msg.missing': 'Не вистачає продукту, перевірте залишки!',
+				'msg.nochanges': 'Жоден параметр не змінено!\nЗмініть значення, або натисніть "{txt}"',
 
 				'lbl.logs': 'Журнал подій:',
 
@@ -82,6 +86,8 @@ class Translator:
 
 				'title.edit': 'Редагування запису',
 				'title.delete': 'Видалення запису',
+				'title.receipt': 'Отримання продукту',
+				'title.submit': 'Віддати продукт в роботу',
 
 				'tooltip.submit': 'Віддати продукт в роботу',
 				'tooltip.add': 'Добавити продукт',
@@ -99,7 +105,7 @@ class Translator:
 		if kwargs:
 			try:
 				return text.format(**kwargs)
-			except:
+			except Exception:
 				return text
 		return text
 
@@ -114,5 +120,5 @@ class Translator:
 
 def _(key, **kwargs) -> str:
 	translator = Translator()
-	translator.set_language('uk')
+	translator.set_language('en')
 	return 	translator.t(key, **kwargs)

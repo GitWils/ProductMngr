@@ -2,11 +2,12 @@ from PyQt6.QtWidgets import QDialog
 from PyQt6.QtCore import Qt
 from Views.Widgets.DialogGrid import DialogGrid
 from Views.Localization import _
+from ProjectTypes import *
 from pprint import pprint
 from abc import ABC, abstractmethod
 
 class ProductDlg(QDialog):
-	def __init__(self, products: []) -> None:
+	def __init__(self, products: list) -> None:
 		super().__init__()
 		self.setWindowModality(Qt.WindowModality.ApplicationModal)
 		self.setFixedWidth(600)
@@ -53,18 +54,18 @@ class ProductDlg(QDialog):
 	def getNote(self) -> str:
 		return self._wgtNote.toPlainText().strip()
 
-	def getProductsList(self) -> []:
+	def getProductsList(self) -> list:
 		res = []
 		for product in self._products:
 			res.append(product.getName())
 		return res
 
 class AddProductDlg(ProductDlg):
-	def __init__(self, products: []) -> None:
+	def __init__(self, products: list) -> None:
 		super().__init__(products)
 
 	def _initValues(self) -> None:
-		self.setWindowTitle("Отримання продукту")
+		self.setWindowTitle(_("title.receipt"))
 
 	def _drawProductField(self, name: str) -> None:
 		self._productName = self._dlgGrid.addEditBox(name)
@@ -74,11 +75,11 @@ class AddProductDlg(ProductDlg):
 		return self._productName.currentText().strip()
 
 class SubtractProductDlg(ProductDlg):
-	def __init__(self, products: []) -> None:
+	def __init__(self, products: list) -> None:
 		super().__init__(products)
 
 	def _initValues(self) -> None:
-		self.setWindowTitle("Віддати продукт в роботу")
+		self.setWindowTitle(_("title.submit"))
 
 	def _drawProductField(self, name: str) -> None:
 		self._productName = self._dlgGrid.addEditBox(name)
@@ -101,21 +102,21 @@ class SubtractProductDlg(ProductDlg):
 		super().accept()
 
 class EditProductDlg(ProductDlg):
-	def __init__(self, products: [], action: []) -> None:
+	def __init__(self, products: list, action: {}) -> None:
 		self._action = action
 		super().__init__(products)
 
 	def accept(self) -> None:
 		if self.getProduct() == self._action.getName()\
-			and self.getWeight() == self._action.getWeight()\
+			and self.getWeight() == -self._action.getWeight()\
 			and self.getNote() == self._action.getNote():
-			self.setMsg('Жоден параметр не змінено!\nЗмініть значення, або натисніть "Скасувати"')
+			self.setMsg(_("msg.nochanges", txt=_("btn.cancel")))
 			return
 		elif self.getProduct() == self._action.getName():
 			for item in self._products:
 				if (self._action.getName() == item.getName()
 					  and self._action.getWeight() - self.getSign() * self.getWeight() > item.getBalance()):
-					self.setMsg('Не вистачає продукту, перевірте залишки!')
+					self.setMsg(_("msg.missing"))
 					return
 		super().accept()
 
@@ -136,7 +137,7 @@ class EditProductDlg(ProductDlg):
 		return self._productName.text().strip()
 
 class DelProductDlg(ProductDlg):
-	def __init__(self, products: [], action: []) -> None:
+	def __init__(self, products: list, action: Action) -> None:
 		self._action = action
 		super().__init__(products)
 

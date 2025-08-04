@@ -6,7 +6,7 @@ import re
 class ProductMngr:
 	def __init__(self) -> None:
 		self._db = DBManager()
-		self._products = []
+		self._products = list()
 		self._actions = dict()
 		self._filter = Filter(0)
 		self.reloadAll()
